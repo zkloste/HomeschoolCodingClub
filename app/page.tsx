@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 type WeekTag =
@@ -171,22 +170,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
-      <header className="border-b border-indigo-300/20 bg-slate-900/70 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Homeschool Coding Club</p>
-            <h1 className="text-xl font-bold sm:text-2xl">Syllabus Hub</h1>
-          </div>
-          <nav className="flex items-center gap-3 text-sm">
-            <Link href="/auth/login" className="rounded-md border border-white/20 px-3 py-1.5 hover:bg-white/10">
-              Login
-            </Link>
-            <Link href="/auth/sign-up" className="rounded-md bg-indigo-500 px-3 py-1.5 font-medium text-white hover:bg-indigo-400">
-              Sign up
-            </Link>
-          </nav>
-        </div>
-      </header>
 
       <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
