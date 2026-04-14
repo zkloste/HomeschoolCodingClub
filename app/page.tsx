@@ -197,11 +197,23 @@ export default function Home() {
             A homeschool coding club where students learn to think and build cool things.
           </h2>
           <p className="max-w-2xl text-slate-200">
-            We use different projects to learn how to build.
+            We are based in Bowling Green, Kentucky, and we use different projects to learn how to build.
           </p>
           <p className="max-w-2xl text-slate-200">
             Because this is a club and not just a class, we can stay open-ended and explore ideas together. Our ultimate goal is to enable
             ourselves to build cool things together.
+          </p>
+          <p className="max-w-2xl text-slate-200">
+            This club is an affiliate of{" "}
+            <a
+              href="https://www.theplacecoopbg.org/home"
+              target="_blank"
+              rel="noreferrer"
+              className="text-cyan-200 underline decoration-cyan-400/70 underline-offset-2 hover:text-cyan-100"
+            >
+              The Place Homeschool Co-op
+            </a>
+            .
           </p>
         </div>
 
