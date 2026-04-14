@@ -32,13 +32,6 @@ type WeekItem = {
   forks: Record<PathTrack, WeekFork>;
 };
 
-type Domain = {
-  id: "web" | "game" | "iot" | "automation" | "robotics";
-  label: string;
-  emoji: string;
-  description: string;
-};
-
 const TAGS: WeekTag[] = [
   "Foundation",
   "Core Skills",
@@ -49,74 +42,41 @@ const TAGS: WeekTag[] = [
   "Finale",
 ];
 
-const DOMAINS: Domain[] = [
-  {
-    id: "web",
-    label: "Web Interfaces",
-    emoji: "🌐",
-    description: "Build simple browser controls and status pages for Pico-powered hardware.",
-  },
-  {
-    id: "game",
-    label: "Interactive Logic Games",
-    emoji: "🎮",
-    description: "Create small game-style logic systems on embedded hardware (not console game development).",
-  },
-  {
-    id: "iot",
-    label: "IoT & Wireless Control",
-    emoji: "📊",
-    description: "Connect gesture and sensor systems over WiFi to control devices in real time.",
-  },
-  {
-    id: "automation",
-    label: "Sensor Automation",
-    emoji: "🧠",
-    description: "Design trigger-action systems using sensor input, thresholds, and state-machine behavior.",
-  },
-  {
-    id: "robotics",
-    label: "Robotics",
-    emoji: "🤖",
-    description: "Control sensors, motors, and behavior systems in real-world builds.",
-  },
-];
-
 const ABSTRACTION_LAYERS = [
   {
     label: "Layer 5",
     name: "Logic + Algorithms",
     icon: "🧠",
     color: "from-violet-500/30 to-fuchsia-500/20 border-violet-400/50",
-    detail: "Students design step-by-step logic, patterns, and strategies before writing code.",
+    detail: "This is the problem-solving layer: goals, rules, and algorithmic strategy are defined before implementation details.",
   },
   {
     label: "Layer 4",
     name: "AI",
     icon: "🤖",
     color: "from-cyan-500/30 to-sky-500/20 border-cyan-400/50",
-    detail: "AI is used after student thinking to refine solutions, explain alternatives, and speed iteration.",
+    detail: "AI sits between pure logic and typed code, translating intent into draft implementations, alternatives, and refactors.",
   },
   {
     label: "Layer 3",
     name: "High-Level Language",
     icon: "💻",
     color: "from-indigo-500/30 to-blue-500/20 border-indigo-400/50",
-    detail: "Students implement ideas in Python and web code while practicing readability and reuse.",
+    detail: "Human-readable languages (like Python and JavaScript) express logic in a structured form that machines can compile or interpret.",
   },
   {
     label: "Layer 2",
     name: "Assembly + Machine Code",
     icon: "⚙️",
     color: "from-amber-500/30 to-orange-500/20 border-amber-400/50",
-    detail: "Learners connect code to instruction-level behavior and understand what the board executes.",
+    detail: "High-level instructions are lowered into processor-specific operations that directly control execution flow and memory behavior.",
   },
   {
     label: "Layer 1",
     name: "Binary + Hardware",
     icon: "🔌",
     color: "from-emerald-500/30 to-teal-500/20 border-emerald-400/50",
-    detail: "Signals, voltage, and digital states become concrete through circuits and sensor wiring.",
+    detail: "At the foundation, electrical states and digital signals are what hardware actually executes and responds to.",
   },
 ];
 
@@ -210,8 +170,8 @@ export default function Home() {
   const weekCountLabel = activeTag === "All" ? "All 16 weeks" : `${visibleWeeks.length} weeks`;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="border-b border-white/10">
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+      <header className="border-b border-indigo-300/20 bg-slate-900/70 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Homeschool Coding Club</p>
@@ -228,46 +188,49 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-10 lg:grid-cols-[1.35fr_1fr]">
+      <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
-          <p className="inline-block rounded-full border border-indigo-400/40 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-300">
+          <p className="inline-block rounded-full border border-cyan-400/40 bg-cyan-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
             16 Weeks · Grades 7-12
           </p>
-          <h2 className="text-3xl font-bold leading-tight sm:text-4xl">Build real coding skills through hands-on hardware and software.</h2>
-          <p className="max-w-2xl text-slate-300">
-            Students progress from core electronics and Python fundamentals into GitHub collaboration, IoT, and capstone projects while learning
-            to use AI as a power tool, not a crutch. The sequence keeps responsibility for thinking with the student first, then unlocks AI for
-            refinement and speed.
+          <h2 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+            A homeschool coding club where students learn to think and build cool things.
+          </h2>
+          <p className="max-w-2xl text-slate-200">
+            We use different projects to learn how to build.
           </p>
-          <div className="flex flex-wrap gap-3 pt-2 text-sm text-slate-200">
-            <span className="rounded-md border border-white/15 px-3 py-1.5">Raspberry Pi Pico + CircuitPython</span>
-            <span className="rounded-md border border-white/15 px-3 py-1.5">GitHub from Week 8</span>
-            <span className="rounded-md border border-white/15 px-3 py-1.5">AI lock-then-unlock workflow</span>
-            <span className="rounded-md border border-white/15 px-3 py-1.5">Guiding motto: Build cool things</span>
-          </div>
+          <p className="max-w-2xl text-slate-200">
+            Because this is a club and not just a class, we can stay open-ended and explore ideas together. Our ultimate goal is to enable
+            ourselves to build cool things together.
+          </p>
         </div>
 
-        <aside className="rounded-xl border border-white/10 bg-slate-900/70 p-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Program Arc</h3>
+        <aside className="rounded-xl border border-violet-300/30 bg-gradient-to-br from-violet-500/15 to-fuchsia-500/10 p-5">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-violet-100">What Families Can Expect</h3>
           <ul className="mt-4 space-y-2 text-sm text-slate-200">
-            <li>Weeks 1-7: foundations and core coding skills</li>
-            <li>Weeks 8-10: GitHub workflow and collaboration</li>
-            <li>Weeks 11-13: IoT, data, and advanced problem solving</li>
-            <li>Weeks 14-16: capstone planning, build, and demo day</li>
+            <li>Students explain their decisions, not just copy code that works.</li>
+            <li>Projects are portfolio-ready and tracked with GitHub history.</li>
+            <li>Teams practice communication, ownership, and peer feedback.</li>
           </ul>
         </aside>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-8" aria-labelledby="ai-framework-heading">
-        <div className="rounded-xl border border-indigo-400/20 bg-gradient-to-b from-slate-900/80 to-slate-900/50 p-5">
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
+        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
           <h3 id="ai-framework-heading" className="text-2xl font-semibold">
             AI Learning Framework
           </h3>
-          <p className="mt-2 max-w-4xl text-slate-300">Power tool, not crutch. Build cool things.</p>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
+            build first, and then use AI to test ideas, improve structure, and speed iteration.
+          </p>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            The rule is clear in every grade band: if you cannot explain it, you do not ship it.
+          </p>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-indigo-400/20 bg-slate-950/50 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Abstraction Stack</h4>
+            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
               <ul className="mt-3 space-y-2 text-slate-200">
                 {ABSTRACTION_LAYERS.map((layer) => (
                   <li key={layer.label}>
@@ -278,7 +241,7 @@ export default function Home() {
                       className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
                         selectedLayer.label === layer.label
                           ? `${layer.color} ring-1 ring-white/30`
-                          : "border-white/10 from-slate-900/80 to-slate-900/40 hover:border-white/30"
+                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
                       }`}
                     >
                       <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
@@ -290,7 +253,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 rounded-md border border-white/15 bg-slate-900/70 p-3 text-sm text-slate-200">
+              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
                 <p className="font-semibold text-white">
                   {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
                 </p>
@@ -298,8 +261,8 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-lg border border-indigo-400/20 bg-slate-950/50 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Three-Phase Workflow</h4>
+            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
               <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
                 {AI_PHASES.map((phase, index) => (
                   <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
@@ -310,7 +273,7 @@ export default function Home() {
                       className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
                         selectedPhase.title === phase.title
                           ? `${phase.color} ring-1 ring-white/30`
-                          : "border-indigo-400/30 from-slate-900/80 to-slate-900/40 hover:border-indigo-300/50"
+                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
                       }`}
                     >
                       <p className="text-xl">{phase.icon}</p>
@@ -322,7 +285,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 rounded-md border border-white/15 bg-slate-900/70 p-3 text-sm text-slate-200">
+              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
                 <p className="font-semibold text-white">
                   {selectedPhase.icon} {selectedPhase.title}
                 </p>
@@ -332,11 +295,11 @@ export default function Home() {
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-white/10 bg-slate-950/40 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-300">By Grade Band</h4>
+            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
               <ul className="mt-2 space-y-2 text-slate-200">
                 {GRADE_BAND_EMPHASIS.map((band) => (
-                  <li key={band.title} className="rounded-md border border-white/10 bg-slate-900/70 p-2">
+                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
                     <p className="text-sm font-medium">{band.title}</p>
                     <p className="text-xs text-slate-300">{band.detail}</p>
                   </li>
@@ -344,11 +307,11 @@ export default function Home() {
               </ul>
             </article>
 
-            <article className="rounded-lg border border-white/10 bg-slate-950/40 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Class Rules</h4>
+            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
               <ul className="mt-2 grid gap-2 text-slate-200">
                 {AI_PRACTICES.map((practice) => (
-                  <li key={practice} className="rounded-md border border-white/10 bg-slate-900/70 px-3 py-2 text-sm">
+                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
                     {practice}
                   </li>
                 ))}
@@ -358,162 +321,153 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-6" aria-labelledby="curriculum-heading">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
-          <p className="text-sm text-slate-300">{weekCountLabel}</p>
-        </div>
-
-        <div className="mb-5 flex flex-wrap gap-2">
-          <button
-            type="button"
-            aria-pressed={activeTag === "All"}
-            className={`rounded-full border px-3 py-1 text-sm ${activeTag === "All" ? "border-indigo-400 bg-indigo-500/20 text-indigo-200" : "border-white/20 text-slate-200 hover:bg-white/10"}`}
-            onClick={() => setActiveTag("All")}
-          >
-            All
-          </button>
-          {TAGS.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              aria-pressed={activeTag === tag}
-              className={`rounded-full border px-3 py-1 text-sm ${activeTag === tag ? "border-indigo-400 bg-indigo-500/20 text-indigo-200" : "border-white/20 text-slate-200 hover:bg-white/10"}`}
-              onClick={() => setActiveTag(tag)}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-          <div className="max-h-[34rem] overflow-auto rounded-xl border border-white/10 bg-slate-900/60 p-3">
-            <ul className="space-y-2">
-              {visibleWeeks.map((item) => {
-                const isSelected = selectedWeek.week === item.week;
-                return (
-                  <li key={item.week}>
-                    <button
-                      type="button"
-                      aria-current={isSelected ? "true" : undefined}
-                      aria-label={`Select Week ${item.week}: ${item.title}`}
-                      onClick={() => setSelectedWeek(item)}
-                      className={`w-full rounded-lg border p-3 text-left transition ${isSelected ? "border-indigo-400/60 bg-indigo-500/10" : "border-white/10 bg-slate-900 hover:border-white/30 hover:bg-white/5"}`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="font-medium">
-                          Week {item.week}: {item.title}
-                        </p>
-                        <span className="text-lg">{item.emoji}</span>
-                      </div>
-                      <p className="mt-1 text-sm text-slate-300">{item.csFocus}</p>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
+        <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
+            <p className="text-sm text-slate-300">{weekCountLabel}</p>
           </div>
 
-          <article className="rounded-xl border border-white/10 bg-slate-900/60 p-5" aria-live="polite">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-md border border-white/20 px-2 py-1 text-xs uppercase tracking-wide text-slate-300">
-                Week {selectedWeek.week}
-              </span>
-              <span className={`rounded-md border px-2 py-1 text-xs font-medium ${TAG_STYLES[selectedWeek.tag]}`}>{selectedWeek.tag}</span>
-              <span className="rounded-md border border-purple-400/40 bg-purple-500/15 px-2 py-1 text-xs text-purple-200">
-                {getGitPhase(selectedWeek.week)}
-              </span>
-            </div>
-            <h4 className="mt-3 text-2xl font-semibold">
-              {selectedWeek.emoji} {selectedWeek.title}
-            </h4>
-            <p className="mt-2 text-slate-200">{selectedWeek.summary}</p>
+          <div className="mb-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              aria-pressed={activeTag === "All"}
+              className={`rounded-full border px-3 py-1 text-sm ${activeTag === "All" ? "border-violet-300 bg-violet-500/25 text-violet-100" : "border-violet-200/30 text-slate-200 hover:bg-violet-500/15"}`}
+              onClick={() => setActiveTag("All")}
+            >
+              All
+            </button>
+            {TAGS.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                aria-pressed={activeTag === tag}
+                className={`rounded-full border px-3 py-1 text-sm ${activeTag === tag ? "border-violet-300 bg-violet-500/25 text-violet-100" : "border-violet-200/30 text-slate-200 hover:bg-violet-500/15"}`}
+                onClick={() => setActiveTag(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
 
-            <div className="mt-4">
-              <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">CS Focus</h5>
-              <p className="mt-1 text-slate-200">{selectedWeek.csFocus}</p>
-            </div>
-
-            <div className="mt-5">
-              <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">Learning Path</p>
-              <div className="mt-2 inline-flex rounded-full border border-white/20 p-1">
-                {(["Beginner", "Advanced"] as PathTrack[]).map((path) => (
-                  <button
-                    key={path}
-                    type="button"
-                    aria-pressed={activePath === path}
-                    className={`rounded-full px-3 py-1 text-sm transition ${activePath === path ? "bg-indigo-500/20 text-indigo-200" : "text-slate-200 hover:bg-white/10"}`}
-                    onClick={() => setActivePath(path)}
-                  >
-                    {path}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Project Goal</h5>
-              <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].goal}</p>
-            </div>
-
-            <div className="mt-4">
-              <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Activities</h5>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-200">
-                {selectedWeek.forks[activePath].activities.map((activity) => (
-                  <li key={activity}>{activity}</li>
-                ))}
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div className="max-h-[34rem] overflow-auto rounded-xl border border-purple-200/20 bg-slate-900/55 p-3">
+              <ul className="space-y-2">
+                {visibleWeeks.map((item) => {
+                  const isSelected = selectedWeek.week === item.week;
+                  return (
+                    <li key={item.week}>
+                      <button
+                        type="button"
+                        aria-current={isSelected ? "true" : undefined}
+                        aria-label={`Select Week ${item.week}: ${item.title}`}
+                        onClick={() => setSelectedWeek(item)}
+                        className={`w-full rounded-lg border p-3 text-left transition ${isSelected ? "border-fuchsia-300/60 bg-fuchsia-500/15" : "border-purple-200/20 bg-slate-900/70 hover:border-purple-200/40 hover:bg-purple-500/10"}`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-medium">
+                            Week {item.week}: {item.title}
+                          </p>
+                          <span className="text-lg">{item.emoji}</span>
+                        </div>
+                        <p className="mt-1 text-sm text-slate-300">{item.csFocus}</p>
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
-            <div className="mt-4">
-              <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Materials</h5>
-              <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].materials}</p>
-            </div>
-          </article>
-        </div>
-      </section>
+            <article className="rounded-xl border border-fuchsia-200/25 bg-slate-900/55 p-5" aria-live="polite">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-md border border-purple-200/35 px-2 py-1 text-xs uppercase tracking-wide text-purple-100">
+                  Week {selectedWeek.week}
+                </span>
+                <span className={`rounded-md border px-2 py-1 text-xs font-medium ${TAG_STYLES[selectedWeek.tag]}`}>{selectedWeek.tag}</span>
+                <span className="rounded-md border border-pink-300/40 bg-pink-500/20 px-2 py-1 text-xs text-pink-100">
+                  {getGitPhase(selectedWeek.week)}
+                </span>
+              </div>
+              <h4 className="mt-3 text-2xl font-semibold">
+                {selectedWeek.emoji} {selectedWeek.title}
+              </h4>
+              <p className="mt-2 text-slate-200">{selectedWeek.summary}</p>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-10" aria-labelledby="capstone-kit-heading">
-        <h3 id="capstone-kit-heading" className="mb-4 text-2xl font-semibold">Capstone Kit Preview</h3>
-        <p className="max-w-3xl text-slate-300">
-          Final project teams build one shared system with these kits: a robotic arm car platform and a motion-sensing glove controller.
-        </p>
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <article className="rounded-xl border border-white/10 bg-slate-900/60 p-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://m.media-amazon.com/images/I/71wfSsqaopL._AC_SL1500_.jpg"
-              alt="Robotic arm car kit with mecanum wheels and mounted arm"
-              className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
-              loading="lazy"
-            />
-            <h4 className="mt-3 font-semibold">Robotic Arm Car Platform</h4>
-            <p className="mt-1 text-sm text-slate-300">Used for drive control, arm movement, and multi-team integration over WiFi.</p>
-          </article>
-          <article className="rounded-xl border border-white/10 bg-slate-900/60 p-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://m.media-amazon.com/images/I/71I3Y+UhGRL._AC_SL1500_.jpg"
-              alt="Wearable motion sensing glove kit for gesture control"
-              className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
-              loading="lazy"
-            />
-            <h4 className="mt-3 font-semibold">Motion-Sensing Glove</h4>
-            <p className="mt-1 text-sm text-slate-300">Used to generate gesture commands that are sent wirelessly to the car and arm teams.</p>
-          </article>
-        </div>
-      </section>
+              <div className="mt-4">
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">CS Focus</h5>
+                <p className="mt-1 text-slate-200">{selectedWeek.csFocus}</p>
+              </div>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-16" aria-labelledby="domains-heading">
-        <h3 id="domains-heading" className="mb-4 text-2xl font-semibold">Five Domain Pathways</h3>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-          {DOMAINS.map((domain) => (
-            <article key={domain.id} className="rounded-xl border border-white/10 bg-slate-900/60 p-4">
-              <p className="text-2xl">{domain.emoji}</p>
-              <h4 className="mt-2 font-semibold">{domain.label}</h4>
-              <p className="mt-2 text-sm text-slate-300">{domain.description}</p>
+              <div className="mt-5">
+                <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">Learning Path</p>
+                <div className="mt-2 inline-flex rounded-full border border-fuchsia-200/30 p-1">
+                  {(["Beginner", "Advanced"] as PathTrack[]).map((path) => (
+                    <button
+                      key={path}
+                      type="button"
+                      aria-pressed={activePath === path}
+                      className={`rounded-full px-3 py-1 text-sm transition ${activePath === path ? "bg-fuchsia-500/25 text-fuchsia-100" : "text-slate-200 hover:bg-fuchsia-500/15"}`}
+                      onClick={() => setActivePath(path)}
+                    >
+                      {path}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Project Goal</h5>
+                <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].goal}</p>
+              </div>
+
+              <div className="mt-4">
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Activities</h5>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-200">
+                  {selectedWeek.forks[activePath].activities.map((activity) => (
+                    <li key={activity}>{activity}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-4">
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Materials</h5>
+                <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].materials}</p>
+              </div>
             </article>
-          ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-20" aria-labelledby="capstone-kit-heading">
+        <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">
+          <h3 id="capstone-kit-heading" className="mb-4 text-2xl font-semibold">Capstone Kit Preview</h3>
+          <p className="max-w-3xl text-slate-200">
+            Final project teams build one shared system with these kits: a robotic arm car platform and a motion-sensing glove controller.
+          </p>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <article className="rounded-xl border border-emerald-200/30 bg-emerald-950/30 p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://m.media-amazon.com/images/I/71wfSsqaopL._AC_SL1500_.jpg"
+                alt="Robotic arm car kit with mecanum wheels and mounted arm"
+                className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
+                loading="lazy"
+              />
+              <h4 className="mt-3 font-semibold text-emerald-100">Robotic Arm Car Platform</h4>
+              <p className="mt-1 text-sm text-slate-300">Used for drive control, arm movement, and multi-team integration over WiFi.</p>
+            </article>
+            <article className="rounded-xl border border-cyan-200/30 bg-cyan-950/30 p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://m.media-amazon.com/images/I/71I3Y+UhGRL._AC_SL1500_.jpg"
+                alt="Wearable motion sensing glove kit for gesture control"
+                className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
+                loading="lazy"
+              />
+              <h4 className="mt-3 font-semibold text-cyan-100">Motion-Sensing Glove</h4>
+              <p className="mt-1 text-sm text-slate-300">Used to generate gesture commands that are sent wirelessly to the car and arm teams.</p>
+            </article>
+          </div>
         </div>
       </section>
     </main>
