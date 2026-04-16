@@ -32,6 +32,7 @@ CREATE TABLE public.semesters (
   is_active boolean NOT NULL DEFAULT false,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  fees smallint NOT NULL DEFAULT '50'::smallint,
   CONSTRAINT semesters_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.student_applications (

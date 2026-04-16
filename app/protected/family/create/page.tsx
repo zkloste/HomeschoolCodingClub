@@ -13,27 +13,6 @@ import { CreateFamilyForm } from "../../../../components/create-family-form";
 export default async function CreateFamilyPage() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
-  // #region agent log
-  void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "ac198a",
-    },
-    body: JSON.stringify({
-      sessionId: "ac198a",
-      runId: "initial",
-      hypothesisId: "H2",
-      location: "app/protected/family/create/page.tsx:15",
-      message: "Create family page auth state",
-      data: {
-        hasUser: Boolean(data.user),
-        hasAuthError: Boolean(error),
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
 
   if (error || !data.user) {
     redirect("/auth/login");
@@ -44,27 +23,6 @@ export default async function CreateFamilyPage() {
     .select("id")
     .eq("id", data.user.id)
     .maybeSingle();
-  // #region agent log
-  void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "ac198a",
-    },
-    body: JSON.stringify({
-      sessionId: "ac198a",
-      runId: "initial",
-      hypothesisId: "H1",
-      location: "app/protected/family/create/page.tsx:28",
-      message: "Profile row lookup for current user",
-      data: {
-        profileExists: Boolean(profileRow?.id),
-        profileLookupErrorCode: profileLookupError?.code ?? null,
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
 
   const { data: existingFamily } = await supabase
     .from("families")

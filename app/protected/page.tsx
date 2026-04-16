@@ -24,88 +24,24 @@ async function ProtectedDashboardContent() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser();
-  // #region agent log
-  void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "926804",
-    },
-    body: JSON.stringify({
-      sessionId: "926804",
-      runId: "initial",
-      hypothesisId: "H2",
-      location: "app/protected/page.tsx:26",
-      message: "Protected page auth result",
-      data: {
-        hasUser: Boolean(data.user),
-        hasAuthError: Boolean(error),
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
 
   if (error || !data.user) {
     redirect("/auth/login");
   }
 
-  let { data: profile, error: profileError } = await supabase
+  const { data: profileLookup, error: profileError } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", data.user.id)
     .maybeSingle();
-  // #region agent log
-  void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "926804",
-    },
-    body: JSON.stringify({
-      sessionId: "926804",
-      runId: "initial",
-      hypothesisId: "H1",
-      location: "app/protected/page.tsx:35",
-      message: "Profile lookup result",
-      data: {
-        profileFound: Boolean(profile),
-        profileErrorCode: profileError?.code ?? null,
-        profileErrorMessage: profileError?.message ?? null,
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
 
   if (profileError) {
     redirect("/auth/login");
   }
 
-  if (!profile) {
-    // #region agent log
-    void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Debug-Session-Id": "926804",
-      },
-      body: JSON.stringify({
-        sessionId: "926804",
-        runId: "initial",
-        hypothesisId: "H4",
-        location: "app/protected/page.tsx:49",
-        message: "Missing profile branch reached",
-        data: {
-          userIdPresent: Boolean(data.user.id),
-          hasFullNameMetadata: Boolean(data.user.user_metadata?.full_name),
-          hasEmail: Boolean(data.user.email),
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
+  let profile = profileLookup;
 
+  if (!profile) {
     const profileFullName =
       data.user.user_metadata?.full_name?.toString().trim() || data.user.email || "New User";
     const profileEmail = data.user.email;
@@ -122,28 +58,6 @@ async function ProtectedDashboardContent() {
       })
       .select("is_admin")
       .single();
-    // #region agent log
-    void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Debug-Session-Id": "926804",
-      },
-      body: JSON.stringify({
-        sessionId: "926804",
-        runId: "post-fix",
-        hypothesisId: "H5",
-        location: "app/protected/page.tsx:73",
-        message: "Auto profile insert result",
-        data: {
-          insertSucceeded: Boolean(insertedProfile),
-          insertErrorCode: insertProfileError?.code ?? null,
-          insertErrorMessage: insertProfileError?.message ?? null,
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion
 
     if (insertProfileError) {
       redirect("/auth/login");

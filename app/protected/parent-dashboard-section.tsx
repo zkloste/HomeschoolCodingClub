@@ -59,15 +59,6 @@ export function ParentDashboardSection({ data }: ParentDashboardSectionProps) {
       <article className="rounded-xl border border-blue-300/20 bg-gradient-to-br from-blue-600/10 via-indigo-600/10 to-cyan-600/15 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-xl font-semibold text-white">Current Family</h3>
-          {data ? (
-            <span className="rounded-md border border-cyan-300/40 bg-cyan-500/20 px-2 py-1 text-xs text-cyan-100">
-              Live data
-            </span>
-          ) : (
-            <span className="rounded-md border border-amber-300/40 bg-amber-500/20 px-2 py-1 text-xs text-amber-100">
-              No family profile found
-            </span>
-          )}
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -151,18 +142,18 @@ export function ParentDashboardSection({ data }: ParentDashboardSectionProps) {
                         ? `Application status: ${formatStatus(status)}`
                         : "Not applied for this semester"}
                     </p>
-                    <button
-                      type="button"
-                      className={
-                        hasApplied
-                          ? "mt-3 w-full rounded-md border border-emerald-300/30 bg-emerald-500/15 px-3 py-2 text-left text-sm font-medium text-emerald-100"
-                          : "mt-3 w-full rounded-md border border-blue-300/40 bg-blue-500/20 px-3 py-2 text-left text-sm font-medium text-blue-100 hover:bg-blue-500/30"
-                      }
-                    >
-                      {hasApplied
-                        ? `Already applied (${formatStatus(status)})`
-                        : `Apply for ${nextSemester.name}`}
-                    </button>
+                    {hasApplied ? (
+                      <span className="mt-3 block w-full rounded-md border border-emerald-300/30 bg-emerald-500/15 px-3 py-2 text-left text-sm font-medium text-emerald-100">
+                        {`Already applied (${formatStatus(status)})`}
+                      </span>
+                    ) : (
+                      <Link
+                        href={`/protected/applications/new?studentId=${encodeURIComponent(student.id)}&semesterId=${encodeURIComponent(nextSemester.id)}`}
+                        className="mt-3 block w-full rounded-md border border-blue-300/40 bg-blue-500/20 px-3 py-2 text-left text-sm font-medium text-blue-100 hover:bg-blue-500/30"
+                      >
+                        {`Apply for ${nextSemester.name}`}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

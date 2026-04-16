@@ -99,29 +99,6 @@ export function CreateFamilyForm({ parentProfileId }: CreateFamilyFormProps) {
     try {
       const supabase = createClient();
       const { data: authUserResult } = await supabase.auth.getUser();
-      // #region agent log
-      void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Debug-Session-Id": "ac198a",
-        },
-        body: JSON.stringify({
-          sessionId: "ac198a",
-          runId: "initial",
-          hypothesisId: "H3",
-          location: "components/create-family-form.tsx:102",
-          message: "Submit identity alignment check",
-          data: {
-            hasParentProfileIdProp: Boolean(parentProfileId),
-            parentProfileIdPrefix: parentProfileId.slice(0, 8),
-            authUserIdPrefix: authUserResult.user?.id?.slice(0, 8) ?? null,
-            idsMatch: authUserResult.user?.id === parentProfileId,
-          },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
 
       const { data: familyRow, error: familyInsertError } = await supabase
         .from("families")
@@ -132,28 +109,6 @@ export function CreateFamilyForm({ parentProfileId }: CreateFamilyFormProps) {
         })
         .select("id")
         .single();
-      // #region agent log
-      void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Debug-Session-Id": "ac198a",
-        },
-        body: JSON.stringify({
-          sessionId: "ac198a",
-          runId: "initial",
-          hypothesisId: "H4",
-          location: "components/create-family-form.tsx:121",
-          message: "Family insert result",
-          data: {
-            familyInsertSucceeded: Boolean(familyRow?.id),
-            familyInsertErrorCode: familyInsertError?.code ?? null,
-            familyInsertErrorMessage: familyInsertError?.message ?? null,
-          },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
 
       if (familyInsertError || !familyRow) {
         throw familyInsertError ?? new Error("Unable to create family.");
