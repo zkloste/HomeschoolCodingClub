@@ -209,113 +209,7 @@ export default function Home() {
           </ul>
         </aside>
       </section>
-
-      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
-        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
-          <h3 id="ai-framework-heading" className="text-2xl font-semibold">
-            AI Learning Framework
-          </h3>
-          <p className="mt-2 max-w-4xl text-slate-300">
-            We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
-            build first, and then use AI to test ideas, improve structure, and speed iteration.
-          </p>
-          <p className="mt-2 max-w-4xl text-slate-300">
-            The rule is clear in every grade band: if you cannot explain it, you do not ship it.
-          </p>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
-              <ul className="mt-3 space-y-2 text-slate-200">
-                {ABSTRACTION_LAYERS.map((layer) => (
-                  <li key={layer.label}>
-                    <button
-                      type="button"
-                      aria-pressed={selectedLayer.label === layer.label}
-                      onClick={() => setSelectedLayer(layer)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
-                        selectedLayer.label === layer.label
-                          ? `${layer.color} ring-1 ring-white/30`
-                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
-                      }`}
-                    >
-                      <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
-                      <p className="font-medium">
-                        <span className="mr-2">{layer.icon}</span>
-                        {layer.name}
-                      </p>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
-                  {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
-                </p>
-                <p className="mt-1 text-slate-300">{selectedLayer.detail}</p>
-              </div>
-            </article>
-
-            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
-              <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
-                {AI_PHASES.map((phase, index) => (
-                  <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
-                    <button
-                      type="button"
-                      aria-pressed={selectedPhase.title === phase.title}
-                      onClick={() => setSelectedPhase(phase)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
-                        selectedPhase.title === phase.title
-                          ? `${phase.color} ring-1 ring-white/30`
-                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
-                      }`}
-                    >
-                      <p className="text-xl">{phase.icon}</p>
-                      <p className="mt-1 text-sm font-medium">{phase.title}</p>
-                    </button>
-                    {index < AI_PHASES.length - 1 ? (
-                      <div className="mx-1 text-lg text-slate-400">→</div>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
-                  {selectedPhase.icon} {selectedPhase.title}
-                </p>
-                <p className="mt-1 text-slate-300">{selectedPhase.detail}</p>
-              </div>
-            </article>
-          </div>
-
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
-              <ul className="mt-2 space-y-2 text-slate-200">
-                {GRADE_BAND_EMPHASIS.map((band) => (
-                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
-                    <p className="text-sm font-medium">{band.title}</p>
-                    <p className="text-xs text-slate-300">{band.detail}</p>
-                  </li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
-              <ul className="mt-2 grid gap-2 text-slate-200">
-                {AI_PRACTICES.map((practice) => (
-                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
-                    {practice}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
+      
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
         <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -432,6 +326,113 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
+        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
+          <h3 id="ai-framework-heading" className="text-2xl font-semibold">
+            AI Learning Framework
+          </h3>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
+            build first, and then use AI to test ideas, improve structure, and speed iteration.
+          </p>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            The rule is clear in every grade band: if you cannot explain it, you do not ship it.
+          </p>
+
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
+              <ul className="mt-3 space-y-2 text-slate-200">
+                {ABSTRACTION_LAYERS.map((layer) => (
+                  <li key={layer.label}>
+                    <button
+                      type="button"
+                      aria-pressed={selectedLayer.label === layer.label}
+                      onClick={() => setSelectedLayer(layer)}
+                      className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
+                        selectedLayer.label === layer.label
+                          ? `${layer.color} ring-1 ring-white/30`
+                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
+                      }`}
+                    >
+                      <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
+                      <p className="font-medium">
+                        <span className="mr-2">{layer.icon}</span>
+                        {layer.name}
+                      </p>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
+                <p className="font-semibold text-white">
+                  {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
+                </p>
+                <p className="mt-1 text-slate-300">{selectedLayer.detail}</p>
+              </div>
+            </article>
+
+            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
+              <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
+                {AI_PHASES.map((phase, index) => (
+                  <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
+                    <button
+                      type="button"
+                      aria-pressed={selectedPhase.title === phase.title}
+                      onClick={() => setSelectedPhase(phase)}
+                      className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
+                        selectedPhase.title === phase.title
+                          ? `${phase.color} ring-1 ring-white/30`
+                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
+                      }`}
+                    >
+                      <p className="text-xl">{phase.icon}</p>
+                      <p className="mt-1 text-sm font-medium">{phase.title}</p>
+                    </button>
+                    {index < AI_PHASES.length - 1 ? (
+                      <div className="mx-1 text-lg text-slate-400">→</div>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
+                <p className="font-semibold text-white">
+                  {selectedPhase.icon} {selectedPhase.title}
+                </p>
+                <p className="mt-1 text-slate-300">{selectedPhase.detail}</p>
+              </div>
+            </article>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
+              <ul className="mt-2 space-y-2 text-slate-200">
+                {GRADE_BAND_EMPHASIS.map((band) => (
+                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
+                    <p className="text-sm font-medium">{band.title}</p>
+                    <p className="text-xs text-slate-300">{band.detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
+              <ul className="mt-2 grid gap-2 text-slate-200">
+                {AI_PRACTICES.map((practice) => (
+                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
+                    {practice}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-20" aria-labelledby="capstone-kit-heading">
         <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">

@@ -33,10 +33,33 @@ export function LoginForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      // #region agent log
+      void fetch("http://127.0.0.1:7600/ingest/2eb5e1b4-0706-42ca-af3e-7d483411f459", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "926804",
+        },
+        body: JSON.stringify({
+          sessionId: "926804",
+          runId: "initial",
+          hypothesisId: "H3",
+          location: "components/login-form.tsx:36",
+          message: "Password sign-in result",
+          data: {
+            hasError: Boolean(error),
+            hasSession: Boolean(data.session),
+            hasUser: Boolean(data.user),
+            hasFullNameMetadata: Boolean(data.user?.user_metadata?.full_name),
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
       if (error) throw error;
       // Update this route to redirect to an authenticated route. The user already has an active session.
       router.push("/protected");

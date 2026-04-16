@@ -1,0 +1,6 @@
+{"sessionId":"926804","runId":"initial","hypothesisId":"H2","location":"app/protected/page.tsx:26","message":"Protected page auth result","data":{"hasUser":true,"hasAuthError":false},"timestamp":1776335245122}
+{"sessionId":"926804","runId":"initial","hypothesisId":"H1","location":"app/protected/page.tsx:35","message":"Profile lookup result","data":{"profileFound":true,"profileErrorCode":null,"profileErrorMessage":null},"timestamp":1776335245662}
+{"sessionId":"926804","runId":"initial","hypothesisId":"H2","location":"app/protected/page.tsx:26","message":"Protected page auth result","data":{"hasUser":true,"hasAuthError":false},"timestamp":1776335318711}
+{"sessionId":"926804","runId":"initial","hypothesisId":"H1","location":"app/protected/page.tsx:35","message":"Profile lookup result","data":{"profileFound":true,"profileErrorCode":null,"profileErrorMessage":null},"timestamp":1776335318721}
+{"sessionId":"926804","runId":"initial","hypothesisId":"H2","location":"app/protected/page.tsx:26","message":"Protected page auth result","data":{"hasUser":true,"hasAuthError":false},"timestamp":1776335320564}
+{"sessionId":"926804","runId":"initial","hypothesisId":"H1","location":"app/protected/page.tsx:35","message":"Profile lookup result","data":{"profileFound":true,"profileErrorCode":null,"profileErrorMessage":null},"timestamp":1776335320574}
