@@ -3,10 +3,17 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import type { ApplicationFieldOptions } from "@/lib/applications/options";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+
+type ApplicationFieldOptions = {
+  deviceTypes: string[];
+  operatingSystems: string[];
+  comfortLevels: string[];
+  interestCategories: string[];
+};
 
 type CreateStudentApplicationFormProps = {
   studentId: string;
@@ -18,6 +25,66 @@ type CreateStudentApplicationFormProps = {
 };
 
 type RatingsState = Record<string, string>;
+type RatingTone = {
+  sliderAccentClass: string;
+  valueClass: string;
+};
+
+const INTEREST_AREA_INFO: Record<
+  string,
+  { title: string; examples: string[] }
+> = {
+  hardware: {
+    title: "Build with hardware",
+    examples: [
+      "custom small scale smart home (sensors to monitor/control air temp, humidity, door security, etc.)",
+      "automated hydroponics garden (grow lettuce indoors with LED and nutrient monitoring)",
+      "hand controlled rc car (program a glove that detects hand movements to control an rc car)",
+    ],
+  },
+  games: {
+    title: "Make games",
+    examples: [
+      "create a 2d arcade game (pong, snake, tetris, or original game)",
+      "puzzle/escape room game (logic challenges and branching clues)",
+      "interactive adventure game (choose-your-own-story with branching paths and endings)",
+    ],
+  },
+  ai_ml: {
+    title: "AI/ML projects",
+    examples: [
+      "custom ai chatbot website (tutorAI, storyCreatorAI, talkLikeAPirateAI)",
+      "image classifier (train a model to recognize objects or hand signs)",
+      "ai quiz generator (upload notes/textbook and generate study quizzes)",
+    ],
+  },
+  creative_coding: {
+    title: "Creative coding",
+    examples: [
+      "meme and sticker studio app (create captions, remix templates, and share custom designs)",
+      "avatar and character creator website (mix hairstyles, outfits, colors, and accessories, then save/share designs)",
+      "music mood visualizer (live visuals that react to sound)",
+    ],
+  },
+  real_world_impact: {
+    title: "Real-world impact projects",
+    examples: [
+      "recycling/litter tracking app (log cleanups and progress)",
+      "smart classroom tool (team generator, attendance helper, live polls)",
+      "community donation finder app (map local food pantries, shelters, and clothing drop-off sites)",
+    ],
+  },
+};
+
+const INTEREST_CARD_STYLES: Record<string, string> = {
+  hardware: "border-emerald-200/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/5 to-cyan-600/10",
+  games: "border-amber-200/20 bg-gradient-to-br from-amber-600/10 via-orange-600/5 to-yellow-600/10",
+  ai_ml: "border-cyan-200/20 bg-gradient-to-br from-cyan-600/10 via-sky-600/5 to-indigo-600/10",
+  creative_coding:
+    "border-violet-200/20 bg-gradient-to-br from-violet-600/10 via-fuchsia-600/5 to-pink-600/10",
+  real_world_impact:
+    "border-rose-200/20 bg-gradient-to-br from-rose-600/10 via-red-600/5 to-orange-600/10",
+};
 
 export function CreateStudentApplicationForm({
   studentId,
@@ -41,7 +108,13 @@ export function CreateStudentApplicationForm({
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ratings, setRatings] = useState<RatingsState>(() =>
-    Object.fromEntries(options.interestCategories.map((category) => [category, ""])),
+    Object.fromEntries(options.interestCategories.map((category) => [category, "1"])),
+  );
+  const [expandedInterestCards, setExpandedInterestCards] = useState<Record<string, boolean>>(
+    () =>
+      Object.fromEntries(
+        options.interestCategories.map((category) => [category, false]),
+      ),
   );
 
   const canSubmit = useMemo(
@@ -166,7 +239,7 @@ export function CreateStudentApplicationForm({
           required
           value={deviceAvailable}
           onChange={(event) => setDeviceAvailable(event.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         >
           {options.deviceTypes.map((option) => (
             <option key={option} value={option}>
@@ -183,7 +256,7 @@ export function CreateStudentApplicationForm({
           required
           value={sharesDeviceWithSibling}
           onChange={(event) => setSharesDeviceWithSibling(event.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         >
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -196,7 +269,7 @@ export function CreateStudentApplicationForm({
           id="operating-system"
           value={operatingSystem}
           onChange={(event) => setOperatingSystem(event.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         >
           <option value="">Not specified</option>
           {options.operatingSystems.map((option) => (
@@ -214,7 +287,7 @@ export function CreateStudentApplicationForm({
           required
           value={hasCodingExperience}
           onChange={(event) => setHasCodingExperience(event.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         >
           <option value="false">No</option>
           <option value="true">Yes</option>
@@ -228,7 +301,7 @@ export function CreateStudentApplicationForm({
           value={codingToolsUsed}
           onChange={(event) => setCodingToolsUsed(event.target.value)}
           placeholder="Scratch, Python, JavaScript, robotics kits, etc."
-          className="min-h-24 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         />
       </div>
 
@@ -239,7 +312,7 @@ export function CreateStudentApplicationForm({
           required
           value={comfortLevel}
           onChange={(event) => setComfortLevel(event.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         >
           {options.comfortLevels.map((option) => (
             <option key={option} value={option}>
@@ -256,7 +329,7 @@ export function CreateStudentApplicationForm({
           required
           value={studentWhyJoin}
           onChange={(event) => setStudentWhyJoin(event.target.value)}
-          className="min-h-24 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         />
       </div>
 
@@ -267,7 +340,7 @@ export function CreateStudentApplicationForm({
           required
           value={studentWhatToBuildOrLearn}
           onChange={(event) => setStudentWhatToBuildOrLearn(event.target.value)}
-          className="min-h-24 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         />
       </div>
 
@@ -277,27 +350,114 @@ export function CreateStudentApplicationForm({
           id="additional-parent-comments"
           value={additionalParentComments}
           onChange={(event) => setAdditionalParentComments(event.target.value)}
-          className="min-h-24 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
         />
       </div>
 
       <fieldset className="grid gap-4 rounded-md border border-slate-200 p-4">
         <legend className="px-1 text-sm font-medium">Interest ratings (1-5)</legend>
-        {options.interestCategories.map((category) => (
-          <div key={category} className="grid gap-2">
-            <Label htmlFor={`rating-${category}`}>{formatLabel(category)}</Label>
-            <input
-              id={`rating-${category}`}
-              type="number"
-              min={1}
-              max={5}
-              required
-              value={ratings[category] ?? ""}
-              onChange={(event) => setRating(category, event.target.value)}
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
-            />
-          </div>
-        ))}
+        <div className="grid gap-3">
+          {options.interestCategories.map((category) => {
+            const info = INTEREST_AREA_INFO[category];
+            const title = info?.title ?? formatLabel(category);
+            const examples = info?.examples ?? [];
+            const isExpanded = expandedInterestCards[category] ?? false;
+            const currentRating = ratings[category] ?? "1";
+            const ratingTone = getRatingTone(currentRating);
+
+            return (
+              <div
+                key={category}
+                className={`rounded-xl border p-4 ${INTEREST_CARD_STYLES[category] ?? "bg-card"}`}
+              >
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-between gap-3 text-left"
+                  onClick={() =>
+                    setExpandedInterestCards((current) => ({
+                      ...current,
+                      [category]: !current[category],
+                    }))
+                  }
+                  aria-expanded={isExpanded}
+                >
+                  <div className="min-w-0">
+                    <Label htmlFor={`rating-${category}`} className="truncate">
+                      {title}
+                    </Label>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Rate 1 (low) to 5 (most interested)
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`rounded-md border px-2 py-0.5 text-sm font-semibold tabular-nums ${ratingTone.valueClass}`}
+                    >
+                      {currentRating}
+                    </span>
+                    <ChevronDown
+                      className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
+                      aria-hidden="true"
+                    />
+                  </div>
+                </button>
+
+                <div className="mt-4 flex items-center gap-3">
+                  <input
+                    id={`rating-${category}`}
+                    type="range"
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={currentRating}
+                    onChange={(event) => setRating(category, event.target.value)}
+                    className={`w-full cursor-pointer ${ratingTone.sliderAccentClass} 
+                      [&::-webkit-slider-runnable-track]:h-2
+                      [&::-webkit-slider-runnable-track]:rounded-full
+                      [&::-webkit-slider-runnable-track]:bg-input
+                      [&::-webkit-slider-thumb]:appearance-none
+                      [&::-webkit-slider-thumb]:h-4
+                      [&::-webkit-slider-thumb]:w-4
+                      [&::-webkit-slider-thumb]:mt-[-4px]
+                      [&::-webkit-slider-thumb]:rounded-full
+                      [&::-webkit-slider-thumb]:bg-foreground
+                      [&::-webkit-slider-thumb]:border
+                      [&::-webkit-slider-thumb]:border-border
+                      [&::-webkit-slider-thumb]:shadow-sm
+                      [&::-webkit-slider-thumb]:cursor-pointer
+                      [&::-moz-range-track]:h-2
+                      [&::-moz-range-track]:rounded-full
+                      [&::-moz-range-track]:bg-input
+                      [&::-moz-range-thumb]:h-4
+                      [&::-moz-range-thumb]:w-4
+                      [&::-moz-range-thumb]:rounded-full
+                      [&::-moz-range-thumb]:bg-foreground
+                      [&::-moz-range-thumb]:border
+                      [&::-moz-range-thumb]:border-border
+                      [&::-moz-range-thumb]:shadow-sm
+                      [&:focus-visible]:outline-none
+                      [&:focus-visible]:ring-2
+                      [&:focus-visible]:ring-[hsl(var(--ring))]`}
+                  />
+                </div>
+
+                {isExpanded && examples.length > 0 ? (
+                  <div className="mt-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Examples
+                    </p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                      {examples.map((example) => (
+                        <li key={example}>{example}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
       </fieldset>
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
@@ -314,6 +474,37 @@ function formatLabel(value: string) {
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function getRatingTone(rating: string): RatingTone {
+  switch (rating) {
+    case "5":
+      return {
+        sliderAccentClass: "accent-rose-400",
+        valueClass: "border-rose-300/40 bg-rose-500/20 text-rose-200",
+      };
+    case "4":
+      return {
+        sliderAccentClass: "accent-violet-400",
+        valueClass: "border-violet-300/40 bg-violet-500/20 text-violet-200",
+      };
+    case "3":
+      return {
+        sliderAccentClass: "accent-sky-400",
+        valueClass: "border-sky-300/40 bg-sky-500/20 text-sky-200",
+      };
+    case "2":
+      return {
+        sliderAccentClass: "accent-emerald-400",
+        valueClass: "border-emerald-300/40 bg-emerald-500/20 text-emerald-200",
+      };
+    case "1":
+    default:
+      return {
+        sliderAccentClass: "accent-slate-400",
+        valueClass: "border-slate-300/30 bg-slate-500/15 text-slate-200",
+      };
+  }
 }
 
 function mapSubmitErrorToMessage(message: string) {

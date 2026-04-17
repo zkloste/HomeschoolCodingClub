@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CreateStudentApplicationForm } from "../../../../components/create-student-application-form";
-import { loadApplicationFieldOptions } from "@/lib/applications/options";
 import { createClient } from "@/lib/supabase/server";
 
 type NewApplicationPageProps = {
@@ -17,6 +16,25 @@ type NewApplicationPageProps = {
     studentId?: string | string[];
     semesterId?: string | string[];
   }>;
+};
+
+// Hard-coded enum values so this page doesn't depend on Supabase RPCs.
+const DEVICE_TYPES = ["laptop", "desktop", "tablet", "none"];
+const OPERATING_SYSTEMS = ["windows", "mac", "chromebook", "linux", "other"];
+const COMFORT_LEVELS = ["beginner", "some_experience", "intermediate"];
+const INTEREST_CATEGORIES = [
+  "hardware",
+  "games",
+  "ai_ml",
+  "creative_coding",
+  "real_world_impact",
+];
+
+const APPLICATION_FIELD_OPTIONS = {
+  deviceTypes: DEVICE_TYPES,
+  operatingSystems: OPERATING_SYSTEMS,
+  comfortLevels: COMFORT_LEVELS,
+  interestCategories: INTEREST_CATEGORIES,
 };
 
 export default async function NewApplicationPage({ searchParams }: NewApplicationPageProps) {
@@ -103,12 +121,6 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
     );
   }
 
-  const optionsResult = await loadApplicationFieldOptions(supabase);
-
-  if (optionsResult.error || !optionsResult.data) {
-    return <ErrorCard title="Unable to load form options" description={optionsResult.error} />;
-  }
-
   return (
     <div className="mx-auto w-full max-w-4xl p-6">
       <Card>
@@ -125,7 +137,7 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
             semesterId={semesterRow.id}
             semesterName={semesterRow.name}
             submittedByProfileId={authData.user.id}
-            options={optionsResult.data}
+            options={APPLICATION_FIELD_OPTIONS}
           />
         </CardContent>
       </Card>

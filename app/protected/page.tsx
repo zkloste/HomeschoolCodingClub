@@ -6,6 +6,7 @@ import {
   ParentDashboardSection,
   type ParentDashboardData,
 } from "./parent-dashboard-section";
+import { type AdminDashboardData } from "./admin-dashboard-section";
 import { createClient } from "@/lib/supabase/server";
 
 type DashboardRole = "admin" | "parent";
@@ -69,9 +70,12 @@ async function ProtectedDashboardContent() {
   const activeRole: DashboardRole = profile?.is_admin ? "admin" : "parent";
   const fullName = data.user.user_metadata?.full_name || data.user.email;
   let parentDashboardData: ParentDashboardData | null = null;
+  let adminDashboardData: AdminDashboardData | null = null;
 
   if (activeRole === "parent") {
     parentDashboardData = await getParentDashboardData(data.user.id, fullName);
+  } else {
+    adminDashboardData = await getAdminDashboardData();
   }
 
   return (
@@ -87,12 +91,75 @@ async function ProtectedDashboardContent() {
       </section>
 
       {activeRole === "admin" ? (
-        <AdminDashboardSection />
+        <AdminDashboardSection data={adminDashboardData} />
       ) : (
         <ParentDashboardSection data={parentDashboardData} />
       )}
     </div>
   );
+}
+
+async function getAdminDashboardData(): Promise<AdminDashboardData> {
+  const supabase = await createClient();
+  const todayIso = new Date().toISOString().slice(0, 10);
+
+  const { data: nextSemester } = await supabase
+    .from("semesters")
+    .select("id, name, start_date, end_date")
+    .gte("start_date", todayIso)
+    .order("start_date", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (!nextSemester) {
+    return {
+      nextSemester: null,
+      applications: [],
+      statusCounts: {},
+      totalApplications: 0,
+    };
+  }
+
+  const { data: applications } = await supabase
+    .from("student_applications")
+    .select("id, status, submitted_at, student_why_join, students(full_name, family_id)")
+    .eq("semester_id", nextSemester.id)
+    .order("submitted_at", { ascending: false });
+
+  const normalizedApplications: AdminDashboardData["applications"] =
+    applications?.map((application) => {
+      const student = Array.isArray(application.students)
+        ? application.students[0]
+        : application.students;
+      const familyId = student?.family_id ?? null;
+
+      return {
+        id: application.id,
+        studentName: student?.full_name ?? "Unknown student",
+        familyName: familyId ? `Family ${familyId.slice(0, 8)}` : "Family unavailable",
+        semesterName: nextSemester.name,
+        submittedAt: application.submitted_at,
+        status: application.status,
+        notes: application.student_why_join ?? "",
+      };
+    }) ?? [];
+
+  const statusCounts: Record<string, number> = {};
+  for (const application of normalizedApplications) {
+    statusCounts[application.status] = (statusCounts[application.status] ?? 0) + 1;
+  }
+
+  return {
+    nextSemester: {
+      id: nextSemester.id,
+      name: nextSemester.name,
+      startDate: nextSemester.start_date,
+      endDate: nextSemester.end_date,
+    },
+    applications: normalizedApplications,
+    statusCounts,
+    totalApplications: normalizedApplications.length,
+  };
 }
 
 async function getParentDashboardData(
