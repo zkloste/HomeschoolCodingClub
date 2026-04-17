@@ -127,7 +127,8 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
         <CardHeader>
           <CardTitle className="text-2xl">Student Application</CardTitle>
           <CardDescription>
-            Complete this application for {studentRow.full_name} for {semesterRow.name}.
+            Complete this application for {studentRow.full_name} for {semesterRow.name}. Your child
+            will need a laptop or similar portable computer they can bring to each club meeting.
           </CardDescription>
         </CardHeader>
         <CardContent>

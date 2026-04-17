@@ -91,6 +91,15 @@ const INTEREST_CARD_STYLES: Record<string, string> = {
     "border-rose-200/20 bg-gradient-to-br from-rose-600/10 via-red-600/5 to-orange-600/10",
 };
 
+/** Display label for each stored rating 1–5 (shown under the slider; updates with the control). */
+const INTEREST_LEVEL_LABELS: Record<string, string> = {
+  "1": "Not interested.",
+  "2": "A little curious — not a top pick.",
+  "3": "Somewhat interested — happy to explore it.",
+  "4": "Very interested — would love to dig in.",
+  "5": "Super interested — let's do this!",
+};
+
 export function CreateStudentApplicationForm({
   studentId,
   studentName,
@@ -259,13 +268,31 @@ export function CreateStudentApplicationForm({
         Student: {studentName} | Semester: {semesterName}
       </p>
 
+      <div
+        className="rounded-md border border-input bg-muted/30 p-4 text-sm"
+        role="note"
+        aria-label="Laptop requirement for club meetings"
+      >
+        <p className="font-medium text-foreground">Laptop for club meetings</p>
+        <p className="mt-2 text-muted-foreground">
+          Each student works on their own computer during club. Please plan to have a laptop,
+          Chromebook, or other portable computer your child can bring to every session. A desktop
+          that stays at home is not a substitute unless you can reliably bring a portable machine on
+          club days.
+        </p>
+      </div>
+
       <div className="grid gap-2">
         <Label htmlFor="device-available">Device available</Label>
+        <p id="device-available-hint" className="text-xs text-muted-foreground">
+          Choose what best matches the machine your child will actually bring to the club.
+        </p>
         <select
           id="device-available"
           required
           value={deviceAvailable}
           onChange={(event) => setDeviceAvailable(event.target.value)}
+          aria-describedby="device-available-hint"
           className={`rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
             missingRequiredFields.includes("Device available") ? "border-red-500" : "border-input"
           }`}
@@ -396,9 +423,9 @@ export function CreateStudentApplicationForm({
         />
       </div>
 
-      <fieldset className="grid gap-4 rounded-md border border-slate-200 p-4">
+      <fieldset className="grid min-w-0 gap-4 overflow-x-clip rounded-md border border-slate-200 p-4 [min-inline-size:0]">
         <legend className="px-1 text-sm font-medium">Interest ratings (1-5)</legend>
-        <div className="grid gap-3">
+        <div className="grid min-w-0 gap-3">
           {options.interestCategories.map((category) => {
             const info = INTEREST_AREA_INFO[category];
             const title = info?.title ?? formatLabel(category);
@@ -410,11 +437,11 @@ export function CreateStudentApplicationForm({
             return (
               <div
                 key={category}
-                className={`rounded-xl border p-4 ${INTEREST_CARD_STYLES[category] ?? "bg-card"}`}
+                className={`min-w-0 max-w-full rounded-xl border p-4 ${INTEREST_CARD_STYLES[category] ?? "bg-card"}`}
               >
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between gap-3 text-left"
+                  className="flex min-w-0 w-full items-center justify-between gap-3 text-left"
                   onClick={() =>
                     setExpandedInterestCards((current) => ({
                       ...current,
@@ -428,16 +455,11 @@ export function CreateStudentApplicationForm({
                       {title}
                     </Label>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Rate 1 (low) to 5 (most interested)
+                      Move the slider to match how interested the student is.
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`rounded-md border px-2 py-0.5 text-sm font-semibold tabular-nums ${ratingTone.valueClass}`}
-                    >
-                      {currentRating}
-                    </span>
+                  <div className="flex shrink-0 items-center">
                     <ChevronDown
                       className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
                       aria-hidden="true"
@@ -445,16 +467,18 @@ export function CreateStudentApplicationForm({
                   </div>
                 </button>
 
-                <div className="mt-4 flex items-center gap-3">
-                  <input
-                    id={`rating-${category}`}
-                    type="range"
-                    min={1}
-                    max={5}
-                    step={1}
-                    value={currentRating}
-                    onChange={(event) => setRating(category, event.target.value)}
-                    className={`w-full cursor-pointer ${ratingTone.sliderAccentClass} 
+                <div className="mt-4 min-w-0 space-y-2">
+                  <div className="min-w-0 w-full">
+                    <input
+                      id={`rating-${category}`}
+                      type="range"
+                      min={1}
+                      max={5}
+                      step={1}
+                      value={currentRating}
+                      aria-valuetext={interestLevelLabel(currentRating)}
+                      onChange={(event) => setRating(category, event.target.value)}
+                      className={`max-w-full min-w-0 w-full cursor-pointer ${ratingTone.sliderAccentClass} 
                       [&::-webkit-slider-runnable-track]:h-2
                       [&::-webkit-slider-runnable-track]:rounded-full
                       [&::-webkit-slider-runnable-track]:bg-input
@@ -481,7 +505,14 @@ export function CreateStudentApplicationForm({
                       [&:focus-visible]:outline-none
                       [&:focus-visible]:ring-2
                       [&:focus-visible]:ring-[hsl(var(--ring))]`}
-                  />
+                    />
+                  </div>
+                  <p
+                    aria-live="polite"
+                    className={`min-w-0 text-pretty text-center text-sm font-medium leading-snug ${ratingTone.valueClass} rounded-md border px-2 py-1.5`}
+                  >
+                    {interestLevelLabel(currentRating)}
+                  </p>
                 </div>
 
                 {isExpanded && examples.length > 0 ? (
@@ -542,6 +573,10 @@ function formatLabel(value: string) {
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function interestLevelLabel(rating: string): string {
+  return INTEREST_LEVEL_LABELS[rating] ?? INTEREST_LEVEL_LABELS["1"];
 }
 
 function getRatingTone(rating: string): RatingTone {
