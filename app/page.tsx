@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type WeekTag =
   | "Foundation"
@@ -12,6 +14,7 @@ type WeekTag =
   | "Finale";
 
 type PathTrack = "Beginner" | "Advanced";
+type CtaVariant = "violet" | "fuchsia" | "cyan" | "emerald";
 
 type WeekFork = {
   goal: string;
@@ -148,12 +151,70 @@ function getGitPhase(weekNumber: number) {
   return "Pro workflow";
 }
 
+function SectionCta({
+  href,
+  heading,
+  body,
+  buttonLabel,
+  variant = "violet",
+}: {
+  href: string;
+  heading: string;
+  body: string;
+  buttonLabel: string;
+  variant?: CtaVariant;
+}) {
+  const variantStyles: Record<CtaVariant, string> = {
+    violet: "border-violet-300/30 from-violet-600/20 to-fuchsia-600/15",
+    fuchsia: "border-fuchsia-300/30 from-fuchsia-600/20 to-violet-600/15",
+    cyan: "border-cyan-300/30 from-cyan-600/20 to-sky-600/15",
+    emerald: "border-emerald-300/30 from-emerald-600/20 to-teal-600/15",
+  };
+
+  return (
+    <div className={`mt-6 rounded-xl border bg-gradient-to-r p-5 ${variantStyles[variant]}`}>
+      <h4 className="text-xl font-semibold text-white">{heading}</h4>
+      <p className="mt-2 max-w-3xl text-slate-200">{body}</p>
+      <Link
+        href={href}
+        className="mt-4 inline-flex items-center rounded-lg border border-white/25 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+      >
+        {buttonLabel} →
+      </Link>
+    </div>
+  );
+}
+
 export default function Home() {
   const [activeTag, setActiveTag] = useState<WeekTag | "All">("All");
   const [selectedWeek, setSelectedWeek] = useState<WeekItem>(WEEKS[0]);
   const [activePath, setActivePath] = useState<PathTrack>("Beginner");
   const [selectedLayer, setSelectedLayer] = useState(ABSTRACTION_LAYERS[0]);
   const [selectedPhase, setSelectedPhase] = useState(AI_PHASES[0]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const supabase = createClient();
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (isMounted) {
+        setIsAuthenticated(Boolean(data.user));
+      }
+    };
+
+    void loadUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session?.user));
+    });
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   const visibleWeeks = useMemo(
     () => WEEKS.filter((item) => activeTag === "All" || item.tag === activeTag),
@@ -167,9 +228,12 @@ export default function Home() {
   }, [visibleWeeks, selectedWeek.week]);
 
   const weekCountLabel = activeTag === "All" ? "All 16 weeks" : `${visibleWeeks.length} weeks`;
+  const ctaHref = isAuthenticated ? "/protected" : "/auth/sign-up";
+  const ctaButtonLabel = isAuthenticated ? "Go to Parent Dashboard" : "Create Parent Account";
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+    <>
+      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
 
       <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
@@ -185,6 +249,10 @@ export default function Home() {
           <p className="max-w-2xl text-slate-200">
             Because this is a club and not just a class, we can stay open-ended and explore ideas together. Our ultimate goal is to enable
             ourselves to build cool things together.
+          </p>
+          <p className="max-w-2xl text-slate-200">
+            Our curriculum is extremely flexible and intentionally adapts to each group&apos;s interests and experience level, so the learning path
+            and projects we prioritize can change based on what students are most ready and excited to build.
           </p>
           <p className="max-w-2xl text-slate-200">
             This club is an affiliate of{" "}
@@ -210,116 +278,25 @@ export default function Home() {
         </aside>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
-        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
-          <h3 id="ai-framework-heading" className="text-2xl font-semibold">
-            AI Learning Framework
-          </h3>
-          <p className="mt-2 max-w-4xl text-slate-300">
-            We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
-            build first, and then use AI to test ideas, improve structure, and speed iteration.
-          </p>
-          <p className="mt-2 max-w-4xl text-slate-300">
-            The rule is clear in every grade band: if you cannot explain it, you do not ship it.
-          </p>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
-              <ul className="mt-3 space-y-2 text-slate-200">
-                {ABSTRACTION_LAYERS.map((layer) => (
-                  <li key={layer.label}>
-                    <button
-                      type="button"
-                      aria-pressed={selectedLayer.label === layer.label}
-                      onClick={() => setSelectedLayer(layer)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
-                        selectedLayer.label === layer.label
-                          ? `${layer.color} ring-1 ring-white/30`
-                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
-                      }`}
-                    >
-                      <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
-                      <p className="font-medium">
-                        <span className="mr-2">{layer.icon}</span>
-                        {layer.name}
-                      </p>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
-                  {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
-                </p>
-                <p className="mt-1 text-slate-300">{selectedLayer.detail}</p>
-              </div>
-            </article>
-
-            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
-              <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
-                {AI_PHASES.map((phase, index) => (
-                  <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
-                    <button
-                      type="button"
-                      aria-pressed={selectedPhase.title === phase.title}
-                      onClick={() => setSelectedPhase(phase)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
-                        selectedPhase.title === phase.title
-                          ? `${phase.color} ring-1 ring-white/30`
-                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
-                      }`}
-                    >
-                      <p className="text-xl">{phase.icon}</p>
-                      <p className="mt-1 text-sm font-medium">{phase.title}</p>
-                    </button>
-                    {index < AI_PHASES.length - 1 ? (
-                      <div className="mx-1 text-lg text-slate-400">→</div>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
-                  {selectedPhase.icon} {selectedPhase.title}
-                </p>
-                <p className="mt-1 text-slate-300">{selectedPhase.detail}</p>
-              </div>
-            </article>
-          </div>
-
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
-              <ul className="mt-2 space-y-2 text-slate-200">
-                {GRADE_BAND_EMPHASIS.map((band) => (
-                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
-                    <p className="text-sm font-medium">{band.title}</p>
-                    <p className="text-xs text-slate-300">{band.detail}</p>
-                  </li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
-              <ul className="mt-2 grid gap-2 text-slate-200">
-                {AI_PRACTICES.map((practice) => (
-                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
-                    {practice}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          </div>
-        </div>
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Ready to get your child started this term?"
+          body="After reading the overview, take the next step now. Start a parent account or jump to your dashboard to create your family and begin your child's application."
+          buttonLabel={ctaButtonLabel}
+          variant="violet"
+        />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
         <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
+            <div>
+              <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
+              <p className="mt-1 text-sm text-slate-300">
+                This roadmap is flexible and can be adjusted based on student interests, pace, and prior experience.
+              </p>
+            </div>
             <p className="text-sm text-slate-300">{weekCountLabel}</p>
           </div>
 
@@ -433,6 +410,132 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Like the curriculum? Secure your child's spot."
+          body="You just saw the full 16-week roadmap. Use the quick button below to start enrollment immediately and move into family setup and student applications."
+          buttonLabel={ctaButtonLabel}
+          variant="fuchsia"
+        />
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
+        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
+          <h3 id="ai-framework-heading" className="text-2xl font-semibold">
+            AI Learning Framework
+          </h3>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
+            build first, and then use AI to test ideas, improve structure, and speed iteration.
+          </p>
+          <p className="mt-2 max-w-4xl text-slate-300">
+            The rule is clear in every grade band: if you cannot explain it, you do not ship it.
+          </p>
+
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
+              <ul className="mt-3 space-y-2 text-slate-200">
+                {ABSTRACTION_LAYERS.map((layer) => (
+                  <li key={layer.label}>
+                    <button
+                      type="button"
+                      aria-pressed={selectedLayer.label === layer.label}
+                      onClick={() => setSelectedLayer(layer)}
+                      className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
+                        selectedLayer.label === layer.label
+                          ? `${layer.color} ring-1 ring-white/30`
+                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
+                      }`}
+                    >
+                      <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
+                      <p className="font-medium">
+                        <span className="mr-2">{layer.icon}</span>
+                        {layer.name}
+                      </p>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
+                <p className="font-semibold text-white">
+                  {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
+                </p>
+                <p className="mt-1 text-slate-300">{selectedLayer.detail}</p>
+              </div>
+            </article>
+
+            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
+              <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
+                {AI_PHASES.map((phase, index) => (
+                  <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
+                    <button
+                      type="button"
+                      aria-pressed={selectedPhase.title === phase.title}
+                      onClick={() => setSelectedPhase(phase)}
+                      className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
+                        selectedPhase.title === phase.title
+                          ? `${phase.color} ring-1 ring-white/30`
+                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
+                      }`}
+                    >
+                      <p className="text-xl">{phase.icon}</p>
+                      <p className="mt-1 text-sm font-medium">{phase.title}</p>
+                    </button>
+                    {index < AI_PHASES.length - 1 ? (
+                      <div className="mx-1 text-lg text-slate-400">→</div>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
+                <p className="font-semibold text-white">
+                  {selectedPhase.icon} {selectedPhase.title}
+                </p>
+                <p className="mt-1 text-slate-300">{selectedPhase.detail}</p>
+              </div>
+            </article>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
+              <ul className="mt-2 space-y-2 text-slate-200">
+                {GRADE_BAND_EMPHASIS.map((band) => (
+                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
+                    <p className="text-sm font-medium">{band.title}</p>
+                    <p className="text-xs text-slate-300">{band.detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
+              <ul className="mt-2 grid gap-2 text-slate-200">
+                {AI_PRACTICES.map((practice) => (
+                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
+                    {practice}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Want this learning approach for your child?"
+          body="If this AI framework matches what you want in a coding program, take the next step now so your family can begin the application flow today."
+          buttonLabel={ctaButtonLabel}
+          variant="cyan"
+        />
+      </section>
+
       <section className="mx-auto w-full max-w-6xl px-5 pb-20" aria-labelledby="capstone-kit-heading">
         <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">
           <h3 id="capstone-kit-heading" className="mb-4 text-2xl font-semibold">Capstone Kit Preview</h3>
@@ -465,6 +568,17 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-20">
+        <SectionCta
+          href={ctaHref}
+          heading="Your child can start building projects like these."
+          body="Don't wait until spots are full. Create your parent account or head to your dashboard now to add your family and start your child's application."
+          buttonLabel={ctaButtonLabel}
+          variant="emerald"
+        />
+      </section>
+      </main>
+    </>
   );
 }

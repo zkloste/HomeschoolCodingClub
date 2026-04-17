@@ -32,6 +32,28 @@
 - Components with [shadcn/ui](https://ui.shadcn.com/)
 - Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
   - Environment variables automatically assigned to Vercel project
+- Global emergency contact button powered by Formspree (`xwvaovyj`)
+
+## Emergency contact failsafe
+
+This project includes a floating **Report Site Issue** button rendered across all routes.
+It opens a modal form that submits to Formspree.
+
+- Form endpoint/form ID: `xwvaovyj`
+- Component location: `components/emergency-contact-button.tsx`
+- Global mount point: `app/layout.tsx`
+- Captured context: `source_path` hidden field
+- Basic bot friction: hidden honeypot field (`company`) plus Formspree spam filtering
+
+### Rotating the Formspree endpoint
+
+1. Open `components/emergency-contact-button.tsx`.
+2. Update `FORMSPREE_FORM_ID` to the new form ID.
+3. Save and redeploy.
+
+### Notification and spam settings
+
+Configure recipient notifications and spam settings directly in your Formspree dashboard for the `xwvaovyj` form.
 
 ## Demo
 
