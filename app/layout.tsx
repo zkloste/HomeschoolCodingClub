@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { PublicNavbarShell } from "@/components/public-navbar-shell";
+import { EmergencyContactButton } from "@/components/emergency-contact-button";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -36,6 +37,7 @@ export default function RootLayout({
         >
           <PublicNavbarShell />
           {children}
+          <EmergencyContactButton />
         </ThemeProvider>
       </body>
     </html>

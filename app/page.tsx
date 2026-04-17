@@ -250,6 +250,10 @@ export default function Home() {
             ourselves to build cool things together.
           </p>
           <p className="max-w-2xl text-slate-200">
+            Our curriculum is extremely flexible and intentionally adapts to each group's interests and experience level, so the learning path
+            and projects we prioritize can change based on what students are most ready and excited to build.
+          </p>
+          <p className="max-w-2xl text-slate-200">
             This club is an affiliate of{" "}
             <a
               href="https://www.theplacecoopbg.org/home"
