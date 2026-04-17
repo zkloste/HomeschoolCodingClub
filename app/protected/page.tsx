@@ -1,15 +1,23 @@
 import { Suspense } from "react";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { AdminDashboardSection } from "./admin-dashboard-section";
 import {
   ParentDashboardSection,
+  type FamilyFormState,
   type ParentDashboardData,
 } from "./parent-dashboard-section";
 import { type AdminDashboardData } from "./admin-dashboard-section";
 import { createClient } from "@/lib/supabase/server";
 
 type DashboardRole = "admin" | "parent";
+type ApplicationStatus = "accepted" | "waitlisted" | "rejected";
+
+const initialFamilyFormState: FamilyFormState = {
+  status: "idle",
+  message: "",
+};
 
 export default async function ProtectedPage() {
   return (
@@ -91,12 +99,290 @@ async function ProtectedDashboardContent() {
       </section>
 
       {activeRole === "admin" ? (
-        <AdminDashboardSection data={adminDashboardData} />
+        <AdminDashboardSection
+          data={adminDashboardData}
+          onUpdateApplicationStatus={updateApplicationStatus}
+        />
       ) : (
-        <ParentDashboardSection data={parentDashboardData} />
+        <ParentDashboardSection
+          data={parentDashboardData}
+          onAddStudent={addStudentToFamily}
+          onUpdateStudent={updateFamilyStudent}
+          onRemoveStudent={removeFamilyStudent}
+          initialFormState={initialFamilyFormState}
+        />
       )}
     </div>
   );
+}
+
+async function updateApplicationStatus(formData: FormData) {
+  "use server";
+
+  const applicationId = formData.get("applicationId");
+  const nextStatus = formData.get("nextStatus");
+
+  if (typeof applicationId !== "string" || applicationId.trim().length === 0) {
+    return;
+  }
+
+  if (!isValidApplicationStatus(nextStatus)) {
+    return;
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !authData.user) {
+    redirect("/auth/login");
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", authData.user.id)
+    .maybeSingle();
+
+  if (profileError || !profile?.is_admin) {
+    redirect("/protected");
+  }
+
+  await supabase
+    .from("student_applications")
+    .update({ status: nextStatus })
+    .eq("id", applicationId);
+
+  revalidatePath("/protected");
+}
+
+function isValidApplicationStatus(
+  value: FormDataEntryValue | null,
+): value is ApplicationStatus {
+  return value === "accepted" || value === "waitlisted" || value === "rejected";
+}
+
+async function addStudentToFamily(
+  _prevState: FamilyFormState,
+  formData: FormData,
+): Promise<FamilyFormState> {
+  "use server";
+
+  const invalidMessage: FamilyFormState = {
+    status: "error",
+    message: "Full name, relationship, and grade level are required.",
+  };
+
+  const fullName = formData.get("fullName");
+  const relationshipToStudent = formData.get("relationshipToStudent");
+  const gradeLevel = formData.get("gradeLevel");
+  const birthDate = formData.get("birthDate");
+
+  if (
+    typeof fullName !== "string" ||
+    typeof relationshipToStudent !== "string" ||
+    typeof gradeLevel !== "string"
+  ) {
+    return invalidMessage;
+  }
+
+  const normalizedFullName = fullName.trim();
+  const normalizedRelationshipToStudent = relationshipToStudent.trim();
+  const normalizedGradeLevel = gradeLevel.trim();
+  const normalizedBirthDate =
+    typeof birthDate === "string" && birthDate.trim().length > 0
+      ? birthDate.trim()
+      : null;
+
+  if (
+    normalizedFullName.length === 0 ||
+    normalizedRelationshipToStudent.length === 0 ||
+    normalizedGradeLevel.length === 0
+  ) {
+    return invalidMessage;
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !authData.user) {
+    redirect("/auth/login");
+  }
+
+  const { data: family, error: familyError } = await supabase
+    .from("families")
+    .select("id")
+    .eq("parent_profile_id", authData.user.id)
+    .maybeSingle();
+
+  if (familyError || !family) {
+    redirect("/protected/family/create");
+  }
+
+  const { error: studentInsertError } = await supabase.from("students").insert({
+    family_id: family.id,
+    full_name: normalizedFullName,
+    relationship_to_student: normalizedRelationshipToStudent,
+    grade_level: normalizedGradeLevel,
+    birth_date: normalizedBirthDate,
+  });
+
+  if (studentInsertError) {
+    return {
+      status: "error",
+      message: "Unable to add child right now. Please try again.",
+    };
+  }
+
+  revalidatePath("/protected");
+
+  return {
+    status: "success",
+    message: `${normalizedFullName} was added to your family.`,
+  };
+}
+
+async function updateFamilyStudent(
+  _prevState: FamilyFormState,
+  formData: FormData,
+): Promise<FamilyFormState> {
+  "use server";
+
+  const studentId = formData.get("studentId");
+  const fullName = formData.get("fullName");
+  const relationshipToStudent = formData.get("relationshipToStudent");
+  const gradeLevel = formData.get("gradeLevel");
+  const birthDate = formData.get("birthDate");
+
+  if (
+    typeof studentId !== "string" ||
+    studentId.trim().length === 0 ||
+    typeof fullName !== "string" ||
+    typeof relationshipToStudent !== "string" ||
+    typeof gradeLevel !== "string"
+  ) {
+    return {
+      status: "error",
+      message: "Invalid student details. Please review and try again.",
+    };
+  }
+
+  const normalizedFullName = fullName.trim();
+  const normalizedRelationshipToStudent = relationshipToStudent.trim();
+  const normalizedGradeLevel = gradeLevel.trim();
+  const normalizedBirthDate =
+    typeof birthDate === "string" && birthDate.trim().length > 0
+      ? birthDate.trim()
+      : null;
+
+  if (
+    normalizedFullName.length === 0 ||
+    normalizedRelationshipToStudent.length === 0 ||
+    normalizedGradeLevel.length === 0
+  ) {
+    return {
+      status: "error",
+      message: "Full name, relationship, and grade level are required.",
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !authData.user) {
+    redirect("/auth/login");
+  }
+
+  const { data: family, error: familyError } = await supabase
+    .from("families")
+    .select("id")
+    .eq("parent_profile_id", authData.user.id)
+    .maybeSingle();
+
+  if (familyError || !family) {
+    redirect("/protected/family/create");
+  }
+
+  const { error: studentUpdateError } = await supabase
+    .from("students")
+    .update({
+      full_name: normalizedFullName,
+      relationship_to_student: normalizedRelationshipToStudent,
+      grade_level: normalizedGradeLevel,
+      birth_date: normalizedBirthDate,
+    })
+    .eq("id", studentId.trim())
+    .eq("family_id", family.id);
+
+  if (studentUpdateError) {
+    return {
+      status: "error",
+      message: "Unable to update child details right now. Please try again.",
+    };
+  }
+
+  revalidatePath("/protected");
+
+  return {
+    status: "success",
+    message: `${normalizedFullName}'s details were updated.`,
+  };
+}
+
+async function removeFamilyStudent(
+  _prevState: FamilyFormState,
+  formData: FormData,
+): Promise<FamilyFormState> {
+  "use server";
+
+  const studentId = formData.get("studentId");
+  const studentName = formData.get("studentName");
+
+  if (typeof studentId !== "string" || studentId.trim().length === 0) {
+    return {
+      status: "error",
+      message: "Unable to identify this child. Please refresh and try again.",
+    };
+  }
+
+  const supabase = await createClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !authData.user) {
+    redirect("/auth/login");
+  }
+
+  const { data: family, error: familyError } = await supabase
+    .from("families")
+    .select("id")
+    .eq("parent_profile_id", authData.user.id)
+    .maybeSingle();
+
+  if (familyError || !family) {
+    redirect("/protected/family/create");
+  }
+
+  const { error: deleteError } = await supabase
+    .from("students")
+    .delete()
+    .eq("id", studentId.trim())
+    .eq("family_id", family.id);
+
+  if (deleteError) {
+    return {
+      status: "error",
+      message: "Unable to remove child right now. Please try again.",
+    };
+  }
+
+  revalidatePath("/protected");
+
+  return {
+    status: "success",
+    message:
+      typeof studentName === "string" && studentName.trim().length > 0
+        ? `${studentName.trim()} was removed from your family.`
+        : "Child was removed from your family.",
+  };
 }
 
 async function getAdminDashboardData(): Promise<AdminDashboardData> {
@@ -122,7 +408,9 @@ async function getAdminDashboardData(): Promise<AdminDashboardData> {
 
   const { data: applications } = await supabase
     .from("student_applications")
-    .select("id, status, submitted_at, student_why_join, students(full_name, family_id)")
+    .select(
+      `id, status, submitted_at, device_available, shares_device_with_sibling, operating_system, has_coding_experience, coding_tools_used, comfort_level, student_why_join, student_what_to_build_or_learn, additional_parent_comments, students(full_name, family_id), student_interest_ratings(category, rating)`,
+    )
     .eq("semester_id", nextSemester.id)
     .order("submitted_at", { ascending: false });
 
@@ -140,7 +428,20 @@ async function getAdminDashboardData(): Promise<AdminDashboardData> {
         semesterName: nextSemester.name,
         submittedAt: application.submitted_at,
         status: application.status,
-        notes: application.student_why_join ?? "",
+        deviceAvailable: application.device_available ?? null,
+        sharesDeviceWithSibling: Boolean(application.shares_device_with_sibling),
+        operatingSystem: application.operating_system ?? null,
+        hasCodingExperience: Boolean(application.has_coding_experience),
+        codingToolsUsed: application.coding_tools_used ?? null,
+        comfortLevel: application.comfort_level ?? null,
+        studentWhyJoin: application.student_why_join ?? null,
+        studentWhatToBuildOrLearn: application.student_what_to_build_or_learn ?? null,
+        additionalParentComments: application.additional_parent_comments ?? null,
+        interestRatings:
+          application.student_interest_ratings?.map((interestRating) => ({
+            category: interestRating.category,
+            rating: interestRating.rating,
+          })) ?? [],
       };
     }) ?? [];
 
@@ -170,7 +471,9 @@ async function getParentDashboardData(
 
   const { data: family } = await supabase
     .from("families")
-    .select("id, primary_home_city, students(id, full_name, grade_level)")
+    .select(
+      "id, primary_home_city, students(id, full_name, relationship_to_student, birth_date, grade_level)",
+    )
     .eq("parent_profile_id", profileId)
     .maybeSingle();
 
@@ -178,6 +481,8 @@ async function getParentDashboardData(
     family?.students?.map((student) => ({
       id: student.id,
       fullName: student.full_name,
+      relationshipToStudent: student.relationship_to_student,
+      birthDate: student.birth_date,
       gradeLevel: student.grade_level,
     })) ?? [];
 

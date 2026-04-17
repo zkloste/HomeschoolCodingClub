@@ -106,6 +106,7 @@ export function CreateStudentApplicationForm({
   const [studentWhatToBuildOrLearn, setStudentWhatToBuildOrLearn] = useState("");
   const [additionalParentComments, setAdditionalParentComments] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [missingRequiredFields, setMissingRequiredFields] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [ratings, setRatings] = useState<RatingsState>(() =>
     Object.fromEntries(options.interestCategories.map((category) => [category, "1"])),
@@ -117,14 +118,7 @@ export function CreateStudentApplicationForm({
       ),
   );
 
-  const canSubmit = useMemo(
-    () =>
-      Boolean(deviceAvailable) &&
-      Boolean(comfortLevel) &&
-      Boolean(studentWhyJoin.trim()) &&
-      Boolean(studentWhatToBuildOrLearn.trim()),
-    [comfortLevel, deviceAvailable, studentWhatToBuildOrLearn, studentWhyJoin],
-  );
+  const canSubmit = useMemo(() => !isSubmitting, [isSubmitting]);
 
   const setRating = (category: string, value: string) => {
     setRatings((current) => ({ ...current, [category]: value }));
@@ -137,16 +131,23 @@ export function CreateStudentApplicationForm({
     const whyJoinText = studentWhyJoin.trim();
     const buildOrLearnText = studentWhatToBuildOrLearn.trim();
     const parentCommentsText = additionalParentComments.trim();
+    const missingFields = getMissingRequiredFields({
+      deviceAvailable,
+      operatingSystem,
+      comfortLevel,
+      whyJoinText,
+      buildOrLearnText,
+    });
 
-    if (!whyJoinText || !buildOrLearnText) {
-      setError("Please complete all required writing prompts.");
+    if (missingFields.length > 0) {
+      setMissingRequiredFields(missingFields);
+      setError(
+        `Please complete the following required field${missingFields.length === 1 ? "" : "s"}: ${missingFields.join(", ")}.`,
+      );
       return;
     }
 
-    if (!deviceAvailable || !comfortLevel) {
-      setError("Please complete all required choice fields.");
-      return;
-    }
+    setMissingRequiredFields([]);
 
     const ratingsPayload = options.interestCategories.map((category) => {
       const rawValue = ratings[category];
@@ -239,7 +240,9 @@ export function CreateStudentApplicationForm({
           required
           value={deviceAvailable}
           onChange={(event) => setDeviceAvailable(event.target.value)}
-          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
+          className={`rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
+            missingRequiredFields.includes("Device available") ? "border-red-500" : "border-input"
+          }`}
         >
           {options.deviceTypes.map((option) => (
             <option key={option} value={option}>
@@ -264,12 +267,15 @@ export function CreateStudentApplicationForm({
       </div>
 
       <div className="grid gap-2">
-        <Label htmlFor="operating-system">Operating system (optional)</Label>
+        <Label htmlFor="operating-system">Operating system</Label>
         <select
           id="operating-system"
+          required
           value={operatingSystem}
           onChange={(event) => setOperatingSystem(event.target.value)}
-          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
+          className={`rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
+            missingRequiredFields.includes("Operating system") ? "border-red-500" : "border-input"
+          }`}
         >
           <option value="">Not specified</option>
           {options.operatingSystems.map((option) => (
@@ -312,7 +318,9 @@ export function CreateStudentApplicationForm({
           required
           value={comfortLevel}
           onChange={(event) => setComfortLevel(event.target.value)}
-          className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
+          className={`rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
+            missingRequiredFields.includes("Comfort level") ? "border-red-500" : "border-input"
+          }`}
         >
           {options.comfortLevels.map((option) => (
             <option key={option} value={option}>
@@ -329,7 +337,11 @@ export function CreateStudentApplicationForm({
           required
           value={studentWhyJoin}
           onChange={(event) => setStudentWhyJoin(event.target.value)}
-          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
+          className={`min-h-24 rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
+            missingRequiredFields.includes("Why does the student want to join?")
+              ? "border-red-500"
+              : "border-input"
+          }`}
         />
       </div>
 
@@ -340,7 +352,11 @@ export function CreateStudentApplicationForm({
           required
           value={studentWhatToBuildOrLearn}
           onChange={(event) => setStudentWhatToBuildOrLearn(event.target.value)}
-          className="min-h-24 rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground"
+          className={`min-h-24 rounded-md border bg-input px-3 py-2 text-sm text-foreground ${
+            missingRequiredFields.includes("What does the student want to build or learn?")
+              ? "border-red-500"
+              : "border-input"
+          }`}
         />
       </div>
 
@@ -523,4 +539,42 @@ function mapSubmitErrorToMessage(message: string) {
   }
 
   return message || "Unable to submit the application. Please try again.";
+}
+
+function getMissingRequiredFields({
+  deviceAvailable,
+  operatingSystem,
+  comfortLevel,
+  whyJoinText,
+  buildOrLearnText,
+}: {
+  deviceAvailable: string;
+  operatingSystem: string;
+  comfortLevel: string;
+  whyJoinText: string;
+  buildOrLearnText: string;
+}) {
+  const missing: string[] = [];
+
+  if (!deviceAvailable) {
+    missing.push("Device available");
+  }
+
+  if (!operatingSystem) {
+    missing.push("Operating system");
+  }
+
+  if (!comfortLevel) {
+    missing.push("Comfort level");
+  }
+
+  if (!whyJoinText) {
+    missing.push("Why does the student want to join?");
+  }
+
+  if (!buildOrLearnText) {
+    missing.push("What does the student want to build or learn?");
+  }
+
+  return missing;
 }
