@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type WeekTag =
   | "Foundation"
@@ -12,6 +14,7 @@ type WeekTag =
   | "Finale";
 
 type PathTrack = "Beginner" | "Advanced";
+type CtaVariant = "violet" | "fuchsia" | "cyan" | "emerald";
 
 type WeekFork = {
   goal: string;
@@ -148,12 +151,70 @@ function getGitPhase(weekNumber: number) {
   return "Pro workflow";
 }
 
+function SectionCta({
+  href,
+  heading,
+  body,
+  buttonLabel,
+  variant = "violet",
+}: {
+  href: string;
+  heading: string;
+  body: string;
+  buttonLabel: string;
+  variant?: CtaVariant;
+}) {
+  const variantStyles: Record<CtaVariant, string> = {
+    violet: "border-violet-300/30 from-violet-600/20 to-fuchsia-600/15",
+    fuchsia: "border-fuchsia-300/30 from-fuchsia-600/20 to-violet-600/15",
+    cyan: "border-cyan-300/30 from-cyan-600/20 to-sky-600/15",
+    emerald: "border-emerald-300/30 from-emerald-600/20 to-teal-600/15",
+  };
+
+  return (
+    <div className={`mt-6 rounded-xl border bg-gradient-to-r p-5 ${variantStyles[variant]}`}>
+      <h4 className="text-xl font-semibold text-white">{heading}</h4>
+      <p className="mt-2 max-w-3xl text-slate-200">{body}</p>
+      <Link
+        href={href}
+        className="mt-4 inline-flex items-center rounded-lg border border-white/25 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+      >
+        {buttonLabel} →
+      </Link>
+    </div>
+  );
+}
+
 export default function Home() {
   const [activeTag, setActiveTag] = useState<WeekTag | "All">("All");
   const [selectedWeek, setSelectedWeek] = useState<WeekItem>(WEEKS[0]);
   const [activePath, setActivePath] = useState<PathTrack>("Beginner");
   const [selectedLayer, setSelectedLayer] = useState(ABSTRACTION_LAYERS[0]);
   const [selectedPhase, setSelectedPhase] = useState(AI_PHASES[0]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const supabase = createClient();
+
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (isMounted) {
+        setIsAuthenticated(Boolean(data.user));
+      }
+    };
+
+    void loadUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session?.user));
+    });
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   const visibleWeeks = useMemo(
     () => WEEKS.filter((item) => activeTag === "All" || item.tag === activeTag),
@@ -167,6 +228,8 @@ export default function Home() {
   }, [visibleWeeks, selectedWeek.week]);
 
   const weekCountLabel = activeTag === "All" ? "All 16 weeks" : `${visibleWeeks.length} weeks`;
+  const ctaHref = isAuthenticated ? "/protected" : "/auth/sign-up";
+  const ctaButtonLabel = isAuthenticated ? "Go to Parent Dashboard" : "Create Parent Account";
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
@@ -209,7 +272,17 @@ export default function Home() {
           </ul>
         </aside>
       </section>
-      
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Ready to get your child started this term?"
+          body="After reading the overview, take the next step now. Start a parent account or jump to your dashboard to create your family and begin your child's application."
+          buttonLabel={ctaButtonLabel}
+          variant="violet"
+        />
+      </section>
+
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
         <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -327,6 +400,16 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Like the curriculum? Secure your child's spot."
+          body="You just saw the full 16-week roadmap. Use the quick button below to start enrollment immediately and move into family setup and student applications."
+          buttonLabel={ctaButtonLabel}
+          variant="fuchsia"
+        />
+      </section>
+
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
         <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
           <h3 id="ai-framework-heading" className="text-2xl font-semibold">
@@ -433,6 +516,15 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12">
+        <SectionCta
+          href={ctaHref}
+          heading="Want this learning approach for your child?"
+          body="If this AI framework matches what you want in a coding program, take the next step now so your family can begin the application flow today."
+          buttonLabel={ctaButtonLabel}
+          variant="cyan"
+        />
+      </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-20" aria-labelledby="capstone-kit-heading">
         <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">
@@ -465,6 +557,16 @@ export default function Home() {
             </article>
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-5 pb-20">
+        <SectionCta
+          href={ctaHref}
+          heading="Your child can start building projects like these."
+          body="Don't wait until spots are full. Create your parent account or head to your dashboard now to add your family and start your child's application."
+          buttonLabel={ctaButtonLabel}
+          variant="emerald"
+        />
       </section>
     </main>
   );
