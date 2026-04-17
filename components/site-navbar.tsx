@@ -82,6 +82,9 @@ export function SiteNavbar() {
           <Link href="/about-the-teacher" className={getLinkClasses(pathname === "/about-the-teacher")}>
             About the Teacher
           </Link>
+          <Link href="/required-materials" className={getLinkClasses(pathname === "/required-materials")}>
+            Required Materials
+          </Link>
           {isAuthenticated ? (
             <>
               <Link href="/protected" className={getLinkClasses(pathname.startsWith("/protected"))}>
@@ -113,6 +116,9 @@ export function SiteNavbar() {
             </Link>
             <Link href="/about-the-teacher" className={getLinkClasses(pathname === "/about-the-teacher")} onClick={closeMenu}>
               About the Teacher
+            </Link>
+            <Link href="/required-materials" className={getLinkClasses(pathname === "/required-materials")} onClick={closeMenu}>
+              Required Materials
             </Link>
             {isAuthenticated ? (
               <>
