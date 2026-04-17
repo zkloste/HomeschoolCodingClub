@@ -91,7 +91,7 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
 
   const { data: semesterRow, error: semesterError } = await supabase
     .from("semesters")
-    .select("id, name, start_date")
+    .select("id, name, start_date, fees")
     .eq("id", semesterId)
     .maybeSingle();
 
@@ -136,6 +136,7 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
             studentName={studentRow.full_name}
             semesterId={semesterRow.id}
             semesterName={semesterRow.name}
+            semesterFeeUsd={Number(semesterRow.fees)}
             submittedByProfileId={authData.user.id}
             options={APPLICATION_FIELD_OPTIONS}
           />

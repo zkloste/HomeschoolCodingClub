@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -20,9 +21,13 @@ type CreateStudentApplicationFormProps = {
   studentName: string;
   semesterId: string;
   semesterName: string;
+  semesterFeeUsd: number;
   submittedByProfileId: string;
   options: ApplicationFieldOptions;
 };
+
+const FEE_ACKNOWLEDGMENT_ERROR =
+  "Please confirm that you are okay with paying the semester fee before submitting.";
 
 type RatingsState = Record<string, string>;
 type RatingTone = {
@@ -91,6 +96,7 @@ export function CreateStudentApplicationForm({
   studentName,
   semesterId,
   semesterName,
+  semesterFeeUsd,
   submittedByProfileId,
   options,
 }: CreateStudentApplicationFormProps) {
@@ -117,8 +123,23 @@ export function CreateStudentApplicationForm({
         options.interestCategories.map((category) => [category, false]),
       ),
   );
+  const [feeAcknowledged, setFeeAcknowledged] = useState(false);
 
-  const canSubmit = useMemo(() => !isSubmitting, [isSubmitting]);
+  const formattedSemesterFee = useMemo(
+    () =>
+      new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(semesterFeeUsd),
+    [semesterFeeUsd],
+  );
+
+  const canSubmit = useMemo(
+    () => !isSubmitting && feeAcknowledged,
+    [isSubmitting, feeAcknowledged],
+  );
 
   const setRating = (category: string, value: string) => {
     setRatings((current) => ({ ...current, [category]: value }));
@@ -127,6 +148,11 @@ export function CreateStudentApplicationForm({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+
+    if (!feeAcknowledged) {
+      setError(FEE_ACKNOWLEDGMENT_ERROR);
+      return;
+    }
 
     const whyJoinText = studentWhyJoin.trim();
     const buildOrLearnText = studentWhatToBuildOrLearn.trim();
@@ -475,6 +501,32 @@ export function CreateStudentApplicationForm({
           })}
         </div>
       </fieldset>
+
+      <div className="flex items-start gap-3 rounded-md border border-input bg-muted/30 p-4">
+        <Checkbox
+          id="fee-acknowledgment"
+          checked={feeAcknowledged}
+          onCheckedChange={(checked) => {
+            const next = checked === true;
+            setFeeAcknowledged(next);
+            if (next) {
+              setError((current) =>
+                current === FEE_ACKNOWLEDGMENT_ERROR ? null : current,
+              );
+            }
+          }}
+          className="mt-0.5"
+          aria-describedby="fee-acknowledgment-description"
+        />
+        <div className="min-w-0 flex-1">
+          <Label htmlFor="fee-acknowledgment" className="cursor-pointer font-medium leading-snug">
+            I am okay with paying the semester fee of {formattedSemesterFee} for {semesterName}.
+          </Label>
+          <p id="fee-acknowledgment-description" className="mt-1 text-xs text-muted-foreground">
+            You must check this box to submit the application.
+          </p>
+        </div>
+      </div>
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 

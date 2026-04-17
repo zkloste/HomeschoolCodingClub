@@ -232,10 +232,8 @@ export default function Home() {
   const ctaButtonLabel = isAuthenticated ? "Go to Parent Dashboard" : "Create Parent Account";
 
   return (
-    <>
-      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
-
-      <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
+    <main className="min-h-svh bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+      <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 sm:py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
           <p className="inline-block rounded-full border border-cyan-400/40 bg-cyan-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
             16 Weeks · Grades 7-12
@@ -288,7 +286,7 @@ export default function Home() {
         />
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
+      <section className="mx-auto w-full max-w-6xl px-5 pb-10 sm:pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
         <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -323,7 +321,7 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-            <div className="max-h-[34rem] overflow-auto rounded-xl border border-purple-200/20 bg-slate-900/55 p-3">
+            <div className="order-2 max-md:max-h-[min(48vh,21rem)] max-md:overflow-y-auto rounded-xl border border-purple-200/20 bg-slate-900/55 p-3 md:max-h-[34rem] md:overflow-y-auto lg:order-1">
               <ul className="space-y-2">
                 {visibleWeeks.map((item) => {
                   const isSelected = selectedWeek.week === item.week;
@@ -337,12 +335,12 @@ export default function Home() {
                         className={`w-full rounded-lg border p-3 text-left transition ${isSelected ? "border-fuchsia-300/60 bg-fuchsia-500/15" : "border-purple-200/20 bg-slate-900/70 hover:border-purple-200/40 hover:bg-purple-500/10"}`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <p className="font-medium">
+                          <p className="font-medium max-md:line-clamp-2 max-md:pr-1">
                             Week {item.week}: {item.title}
                           </p>
                           <span className="text-lg">{item.emoji}</span>
                         </div>
-                        <p className="mt-1 text-sm text-slate-300">{item.csFocus}</p>
+                        <p className="mt-1 text-sm text-slate-300 max-md:line-clamp-1 md:line-clamp-2">{item.csFocus}</p>
                       </button>
                     </li>
                   );
@@ -350,7 +348,10 @@ export default function Home() {
               </ul>
             </div>
 
-            <article className="rounded-xl border border-fuchsia-200/25 bg-slate-900/55 p-5" aria-live="polite">
+            <article
+              className="order-1 rounded-xl border border-fuchsia-200/25 bg-slate-900/55 p-5 lg:order-2"
+              aria-live="polite"
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-md border border-purple-200/35 px-2 py-1 text-xs uppercase tracking-wide text-purple-100">
                   Week {selectedWeek.week}
@@ -372,13 +373,13 @@ export default function Home() {
 
               <div className="mt-5">
                 <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">Learning Path</p>
-                <div className="mt-2 inline-flex rounded-full border border-fuchsia-200/30 p-1">
+                <div className="mt-2 flex w-full rounded-full border border-fuchsia-200/30 p-1 sm:inline-flex sm:w-auto">
                   {(["Beginner", "Advanced"] as PathTrack[]).map((path) => (
                     <button
                       key={path}
                       type="button"
                       aria-pressed={activePath === path}
-                      className={`rounded-full px-3 py-1 text-sm transition ${activePath === path ? "bg-fuchsia-500/25 text-fuchsia-100" : "text-slate-200 hover:bg-fuchsia-500/15"}`}
+                      className={`w-full rounded-full px-3 py-1 text-sm transition sm:w-auto ${activePath === path ? "bg-fuchsia-500/25 text-fuchsia-100" : "text-slate-200 hover:bg-fuchsia-500/15"}`}
                       onClick={() => setActivePath(path)}
                     >
                       {path}
@@ -420,7 +421,7 @@ export default function Home() {
         />
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
+      <section className="mx-auto w-full max-w-6xl px-5 pb-10 sm:pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
         <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
           <h3 id="ai-framework-heading" className="text-2xl font-semibold">
             AI Learning Framework
@@ -470,12 +471,12 @@ export default function Home() {
               <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
               <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
                 {AI_PHASES.map((phase, index) => (
-                  <li key={phase.title} className="flex max-w-full items-center gap-2 md:gap-3">
+                  <li key={phase.title} className="flex max-w-full flex-col items-stretch gap-2 md:flex-row md:items-center md:gap-3">
                     <button
                       type="button"
                       aria-pressed={selectedPhase.title === phase.title}
                       onClick={() => setSelectedPhase(phase)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
+                      className={`w-full min-w-0 rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
                         selectedPhase.title === phase.title
                           ? `${phase.color} ring-1 ring-white/30`
                           : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
@@ -485,7 +486,7 @@ export default function Home() {
                       <p className="mt-1 text-sm font-medium">{phase.title}</p>
                     </button>
                     {index < AI_PHASES.length - 1 ? (
-                      <div className="mx-1 text-lg text-slate-400">→</div>
+                      <div className="hidden text-lg text-slate-400 md:mx-1 md:block">→</div>
                     ) : null}
                   </li>
                 ))}
@@ -526,6 +527,8 @@ export default function Home() {
         </div>
       </section>
 
+      
+
       <section className="mx-auto w-full max-w-6xl px-5 pb-12">
         <SectionCta
           href={ctaHref}
@@ -536,7 +539,7 @@ export default function Home() {
         />
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pb-20" aria-labelledby="capstone-kit-heading">
+      <section className="mx-auto w-full max-w-6xl px-5 pb-12 sm:pb-20" aria-labelledby="capstone-kit-heading">
         <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">
           <h3 id="capstone-kit-heading" className="mb-4 text-2xl font-semibold">Capstone Kit Preview</h3>
           <p className="max-w-3xl text-slate-200">
@@ -578,7 +581,6 @@ export default function Home() {
           variant="emerald"
         />
       </section>
-      </main>
-    </>
+    </main>
   );
 }
