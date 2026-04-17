@@ -232,7 +232,8 @@ export default function Home() {
   const ctaButtonLabel = isAuthenticated ? "Go to Parent Dashboard" : "Create Parent Account";
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+    <>
+      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
 
       <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
@@ -250,7 +251,7 @@ export default function Home() {
             ourselves to build cool things together.
           </p>
           <p className="max-w-2xl text-slate-200">
-            Our curriculum is extremely flexible and intentionally adapts to each group's interests and experience level, so the learning path
+            Our curriculum is extremely flexible and intentionally adapts to each group&apos;s interests and experience level, so the learning path
             and projects we prioritize can change based on what students are most ready and excited to build.
           </p>
           <p className="max-w-2xl text-slate-200">
@@ -290,7 +291,12 @@ export default function Home() {
       <section className="mx-auto w-full max-w-6xl px-5 pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
         <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
+            <div>
+              <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
+              <p className="mt-1 text-sm text-slate-300">
+                This roadmap is flexible and can be adjusted based on student interests, pace, and prior experience.
+              </p>
+            </div>
             <p className="text-sm text-slate-300">{weekCountLabel}</p>
           </div>
 
@@ -572,6 +578,7 @@ export default function Home() {
           variant="emerald"
         />
       </section>
-    </main>
+      </main>
+    </>
   );
 }
