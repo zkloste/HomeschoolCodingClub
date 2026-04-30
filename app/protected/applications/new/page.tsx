@@ -123,10 +123,10 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
 
   return (
     <div className="mx-auto w-full max-w-4xl p-6">
-      <Card>
+      <Card className="border-zinc-700 bg-zinc-900 text-zinc-100">
         <CardHeader>
           <CardTitle className="text-2xl">Student Application</CardTitle>
-          <CardDescription>
+          <CardDescription className="text-zinc-400">
             Complete this application for {studentRow.full_name} for {semesterRow.name}. Your child
             will need a laptop or similar portable computer they can bring to each club meeting.
           </CardDescription>
@@ -150,13 +150,13 @@ export default async function NewApplicationPage({ searchParams }: NewApplicatio
 function ErrorCard({ title, description }: { title: string; description: string }) {
   return (
     <div className="mx-auto mt-10 w-full max-w-xl px-6">
-      <Card>
+      <Card className="border-zinc-700 bg-zinc-900 text-zinc-100">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardDescription className="text-zinc-400">{description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Link href="/protected" className="text-sm font-medium text-blue-600 hover:underline">
+          <Link href="/protected" className="text-sm font-medium text-sky-400 hover:underline">
             Return to dashboard
           </Link>
         </CardContent>

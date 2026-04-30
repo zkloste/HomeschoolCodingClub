@@ -14,8 +14,6 @@ type WeekTag =
   | "Finale";
 
 type PathTrack = "Beginner" | "Advanced";
-type CtaVariant = "violet" | "fuchsia" | "cyan" | "emerald";
-
 type WeekFork = {
   goal: string;
   activities: string[];
@@ -49,56 +47,48 @@ const ABSTRACTION_LAYERS = [
     label: "Layer 5",
     name: "Logic + Algorithms",
     icon: "🧠",
-    color: "from-violet-500/30 to-fuchsia-500/20 border-violet-400/50",
     detail: "This is the problem-solving layer: goals, rules, and algorithmic strategy are defined before implementation details.",
   },
   {
     label: "Layer 4",
     name: "AI",
     icon: "🤖",
-    color: "from-cyan-500/30 to-sky-500/20 border-cyan-400/50",
     detail: "AI sits between pure logic and typed code, translating intent into draft implementations, alternatives, and refactors.",
   },
   {
     label: "Layer 3",
     name: "High-Level Language",
     icon: "💻",
-    color: "from-indigo-500/30 to-blue-500/20 border-indigo-400/50",
     detail: "Human-readable languages (like Python and JavaScript) express logic in a structured form that machines can compile or interpret.",
   },
   {
     label: "Layer 2",
     name: "Assembly + Machine Code",
     icon: "⚙️",
-    color: "from-amber-500/30 to-orange-500/20 border-amber-400/50",
     detail: "High-level instructions are lowered into processor-specific operations that directly control execution flow and memory behavior.",
   },
   {
     label: "Layer 1",
     name: "Binary + Hardware",
     icon: "🔌",
-    color: "from-emerald-500/30 to-teal-500/20 border-emerald-400/50",
     detail: "At the foundation, electrical states and digital signals are what hardware actually executes and responds to.",
   },
 ];
 
-const AI_PHASES = [
+const AI_PHASES: { title: string; icon: string; detail: string }[] = [
   {
     title: "Phase 1 - Think it",
     icon: "📝",
-    color: "from-rose-500/30 to-orange-500/20 border-rose-400/50",
     detail: "Students plan with notes, diagrams, and pseudocode before touching AI tools.",
   },
   {
     title: "Phase 2 - Write it yourself",
     icon: "⌨️",
-    color: "from-blue-500/30 to-indigo-500/20 border-blue-400/50",
     detail: "Students code the first working version independently to build confidence and ownership.",
   },
   {
     title: "Phase 3 - AI improves it",
     icon: "✨",
-    color: "from-violet-500/30 to-purple-500/20 border-violet-400/50",
     detail: "AI helps optimize, clean up, and extend student-authored code once fundamentals are in place.",
   },
 ];
@@ -134,15 +124,25 @@ const WEEKS: WeekItem[] = [
   { week: 16, title: "Capstone Demo Day (Unified System)", emoji: "🏆", tag: "Finale", summary: "All teams jointly present one complete system where gesture input wirelessly controls the car and robotic arm.", csFocus: "System validation, technical communication, and team reflection", activities: ["Run live unified-system scenario tests", "Present team interfaces, integration lessons, and final outcomes"], materials: "Completed integrated build, demo course, slides/notes, GitHub repos", forks: { Beginner: { goal: "Show the shared capstone works end-to-end with clear, reliable baseline functionality.", activities: ["Run a scripted scenario: gesture command -> WiFi transfer -> car movement -> arm action", "Explain each team role and how interfaces enabled integration", "Publish final README with wiring map, command table, and setup steps"], materials: "Integrated RC car + arm + gesture system, demo checklist, final docs" }, Advanced: { goal: "Show the same shared capstone under harder conditions with polished engineering decisions.", activities: ["Run baseline demo plus stress test (packet loss, rapid commands, or failover case)", "Present protocol design decisions, performance observations, and safety trade-offs", "Publish next-iteration roadmap focused on scalability and reliability"], materials: "Integrated advanced build, metrics/log files, architecture slides, polished repo docs" } } },
 ];
 
-const TAG_STYLES: Record<WeekTag, string> = {
-  Foundation: "bg-amber-500/15 text-amber-300 border-amber-500/40",
-  "Core Skills": "bg-blue-500/15 text-blue-300 border-blue-500/40",
-  "Level Up": "bg-emerald-500/15 text-emerald-300 border-emerald-500/40",
-  Project: "bg-violet-500/15 text-violet-300 border-violet-500/40",
-  GitHub: "bg-purple-500/15 text-purple-300 border-purple-500/40",
-  Spotlight: "bg-orange-500/15 text-orange-300 border-orange-500/40",
-  Finale: "bg-red-500/15 text-red-300 border-red-500/40",
-};
+const TAG_PILL = "bg-zinc-800 text-zinc-300 border-zinc-600";
+const WEEK_DATES = [
+  "Aug 18, 2026",
+  "Aug 25, 2026",
+  "Sep 1, 2026",
+  "Sep 8, 2026",
+  "Sep 15, 2026",
+  "Sep 22, 2026",
+  "Sep 29, 2026",
+  "Oct 13, 2026",
+  "Oct 20, 2026",
+  "Oct 27, 2026",
+  "Nov 3, 2026",
+  "Nov 10, 2026",
+  "Nov 17, 2026",
+  "Nov 24, 2026",
+  "Dec 1, 2026",
+  "Dec 8, 2026",
+];
 
 function getGitPhase(weekNumber: number) {
   if (weekNumber <= 7) return "No Git yet";
@@ -151,33 +151,28 @@ function getGitPhase(weekNumber: number) {
   return "Pro workflow";
 }
 
+function getWeekDateLabel(weekNumber: number) {
+  return WEEK_DATES[weekNumber - 1] ?? "Date TBD";
+}
+
 function SectionCta({
   href,
   heading,
   body,
   buttonLabel,
-  variant = "violet",
 }: {
   href: string;
   heading: string;
   body: string;
   buttonLabel: string;
-  variant?: CtaVariant;
 }) {
-  const variantStyles: Record<CtaVariant, string> = {
-    violet: "border-violet-300/30 from-violet-600/20 to-fuchsia-600/15",
-    fuchsia: "border-fuchsia-300/30 from-fuchsia-600/20 to-violet-600/15",
-    cyan: "border-cyan-300/30 from-cyan-600/20 to-sky-600/15",
-    emerald: "border-emerald-300/30 from-emerald-600/20 to-teal-600/15",
-  };
-
   return (
-    <div className={`mt-6 rounded-xl border bg-gradient-to-r p-5 ${variantStyles[variant]}`}>
-      <h4 className="text-xl font-semibold text-white">{heading}</h4>
-      <p className="mt-2 max-w-3xl text-slate-200">{body}</p>
+    <div className="mt-6 rounded-lg border border-sky-300/40 bg-zinc-800 p-5 shadow-sm shadow-sky-500/10">
+      <h4 className="text-xl font-semibold text-zinc-50">{heading}</h4>
+      <p className="mt-2 max-w-3xl text-zinc-200">{body}</p>
       <Link
         href={href}
-        className="mt-4 inline-flex items-center rounded-lg border border-white/25 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+        className="mt-4 inline-flex items-center rounded-md border border-sky-300/50 bg-sky-200 px-5 py-2.5 text-sm font-semibold text-zinc-900 transition hover:bg-sky-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
       >
         {buttonLabel} →
       </Link>
@@ -232,33 +227,33 @@ export default function Home() {
   const ctaButtonLabel = isAuthenticated ? "Go to Parent Dashboard" : "Create Parent Account";
 
   return (
-    <main className="min-h-svh bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+    <main className="min-h-svh bg-zinc-950 text-zinc-100">
       <section className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 sm:py-16 lg:grid-cols-[1.35fr_1fr] lg:py-20">
         <div className="space-y-4">
-          <p className="inline-block rounded-full border border-cyan-400/40 bg-cyan-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">
+          <p className="inline-block rounded border border-zinc-600 bg-zinc-900 px-3 py-1 text-xs font-medium uppercase tracking-wide text-zinc-300">
             16 Weeks · Grades 7-12
           </p>
           <h2 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
             A homeschool coding club where students learn to think and build cool things.
           </h2>
-          <p className="max-w-2xl text-slate-200">
+          <p className="max-w-2xl text-zinc-400">
             We are based in Bowling Green, Kentucky, and we use different projects to learn how to build.
           </p>
-          <p className="max-w-2xl text-slate-200">
+          <p className="max-w-2xl text-zinc-400">
             Because this is a club and not just a class, we can stay open-ended and explore ideas together. Our ultimate goal is to enable
             ourselves to build cool things together.
           </p>
-          <p className="max-w-2xl text-slate-200">
+          <p className="max-w-2xl text-zinc-400">
             Our curriculum is extremely flexible and intentionally adapts to each group&apos;s interests and experience level, so the learning path
             and projects we prioritize can change based on what students are most ready and excited to build.
           </p>
-          <p className="max-w-2xl text-slate-200">
+          <p className="max-w-2xl text-zinc-400">
             This club is an affiliate of{" "}
             <a
               href="https://www.theplacecoopbg.org/home"
               target="_blank"
               rel="noreferrer"
-              className="text-cyan-200 underline decoration-cyan-400/70 underline-offset-2 hover:text-cyan-100"
+              className="text-sky-400 underline underline-offset-2 hover:text-sky-300"
             >
               The Place Homeschool Co-op
             </a>
@@ -266,14 +261,29 @@ export default function Home() {
           </p>
         </div>
 
-        <aside className="rounded-xl border border-violet-300/30 bg-gradient-to-br from-violet-500/15 to-fuchsia-500/10 p-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-violet-100">What Families Can Expect</h3>
-          <ul className="mt-4 space-y-2 text-sm text-slate-200">
-            <li>Students explain their decisions, not just copy code that works.</li>
-            <li>Projects are portfolio-ready and tracked with GitHub history.</li>
-            <li>Teams practice communication, ownership, and peer feedback.</li>
-          </ul>
-        </aside>
+        <div className="space-y-4">
+          <aside className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-300">What Families Can Expect</h3>
+            <ul className="mt-4 space-y-2 text-sm text-zinc-400">
+              <li>Students explain their decisions, not just copy code that works.</li>
+              <li>Projects are portfolio-ready and tracked with GitHub history.</li>
+              <li>Teams practice communication, ownership, and peer feedback.</li>
+            </ul>
+          </aside>
+
+          <aside className="rounded-lg border border-sky-300/40 bg-zinc-900 p-5 shadow-sm shadow-sky-500/10">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-200">Class Meet Times</h3>
+            <ul className="mt-3 space-y-2 text-sm text-zinc-300">
+              <li>
+                <span className="font-semibold text-zinc-100">When:</span> Tuesdays during the fall semester at 12:30 PM
+              </li>
+              <li>
+                <span className="font-semibold text-zinc-100">Where:</span> Eastwood Baptist Church
+              </li>
+              <li className="text-zinc-400">500 Eastwood St, Bowling Green, KY 42103</li>
+            </ul>
+          </aside>
+        </div>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-12">
@@ -282,27 +292,27 @@ export default function Home() {
           heading="Ready to get your child started this term?"
           body="After reading the overview, take the next step now. Start a parent account or jump to your dashboard to create your family and begin your child's application."
           buttonLabel={ctaButtonLabel}
-          variant="violet"
         />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-10 sm:pb-14 lg:pb-16" aria-labelledby="curriculum-heading">
-        <div className="rounded-xl border border-violet-300/20 bg-gradient-to-br from-violet-600/10 via-purple-600/10 to-fuchsia-600/10 p-5">
+        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 id="curriculum-heading" className="text-2xl font-semibold">Curriculum by Week</h3>
-              <p className="mt-1 text-sm text-slate-300">
+              <p className="mt-1 text-sm text-zinc-400">
                 This roadmap is flexible and can be adjusted based on student interests, pace, and prior experience.
               </p>
+              <p className="mt-1 text-sm text-zinc-500">No class on Oct 6, 2026 (fall break).</p>
             </div>
-            <p className="text-sm text-slate-300">{weekCountLabel}</p>
+            <p className="text-sm text-zinc-400">{weekCountLabel}</p>
           </div>
 
           <div className="mb-5 flex flex-wrap gap-2">
             <button
               type="button"
               aria-pressed={activeTag === "All"}
-              className={`rounded-full border px-3 py-1 text-sm ${activeTag === "All" ? "border-violet-300 bg-violet-500/25 text-violet-100" : "border-violet-200/30 text-slate-200 hover:bg-violet-500/15"}`}
+              className={`rounded-md border px-3 py-1 text-sm ${activeTag === "All" ? "border-zinc-500 bg-zinc-800 text-zinc-100" : "border-zinc-600 text-zinc-300 hover:border-zinc-500 hover:bg-zinc-800/50"}`}
               onClick={() => setActiveTag("All")}
             >
               All
@@ -312,7 +322,7 @@ export default function Home() {
                 key={tag}
                 type="button"
                 aria-pressed={activeTag === tag}
-                className={`rounded-full border px-3 py-1 text-sm ${activeTag === tag ? "border-violet-300 bg-violet-500/25 text-violet-100" : "border-violet-200/30 text-slate-200 hover:bg-violet-500/15"}`}
+                className={`rounded-md border px-3 py-1 text-sm ${activeTag === tag ? "border-zinc-500 bg-zinc-800 text-zinc-100" : "border-zinc-600 text-zinc-300 hover:border-zinc-500 hover:bg-zinc-800/50"}`}
                 onClick={() => setActiveTag(tag)}
               >
                 {tag}
@@ -321,7 +331,7 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-            <div className="order-2 max-md:max-h-[min(48vh,21rem)] max-md:overflow-y-auto rounded-xl border border-purple-200/20 bg-slate-900/55 p-3 md:max-h-[34rem] md:overflow-y-auto lg:order-1">
+            <div className="order-2 max-md:max-h-[min(48vh,21rem)] max-md:overflow-y-auto rounded-lg border border-zinc-700 bg-zinc-950 p-3 md:max-h-[34rem] md:overflow-y-auto lg:order-1">
               <ul className="space-y-2">
                 {visibleWeeks.map((item) => {
                   const isSelected = selectedWeek.week === item.week;
@@ -332,7 +342,7 @@ export default function Home() {
                         aria-current={isSelected ? "true" : undefined}
                         aria-label={`Select Week ${item.week}: ${item.title}`}
                         onClick={() => setSelectedWeek(item)}
-                        className={`w-full rounded-lg border p-3 text-left transition ${isSelected ? "border-fuchsia-300/60 bg-fuchsia-500/15" : "border-purple-200/20 bg-slate-900/70 hover:border-purple-200/40 hover:bg-purple-500/10"}`}
+                        className={`w-full rounded-lg border p-3 text-left transition ${isSelected ? "border-zinc-500 bg-zinc-800" : "border-zinc-700 bg-zinc-900 hover:border-zinc-600"}`}
                       >
                         <div className="flex items-center justify-between gap-2">
                           <p className="font-medium max-md:line-clamp-2 max-md:pr-1">
@@ -340,7 +350,8 @@ export default function Home() {
                           </p>
                           <span className="text-lg">{item.emoji}</span>
                         </div>
-                        <p className="mt-1 text-sm text-slate-300 max-md:line-clamp-1 md:line-clamp-2">{item.csFocus}</p>
+                        <p className="mt-1 text-xs text-zinc-500">{getWeekDateLabel(item.week)}</p>
+                        <p className="mt-1 text-sm text-zinc-400 max-md:line-clamp-1 md:line-clamp-2">{item.csFocus}</p>
                       </button>
                     </li>
                   );
@@ -349,37 +360,40 @@ export default function Home() {
             </div>
 
             <article
-              className="order-1 rounded-xl border border-fuchsia-200/25 bg-slate-900/55 p-5 lg:order-2"
+              className="order-1 rounded-lg border border-zinc-700 bg-zinc-950 p-5 lg:order-2"
               aria-live="polite"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-md border border-purple-200/35 px-2 py-1 text-xs uppercase tracking-wide text-purple-100">
+                <span className="rounded-md border border-zinc-600 px-2 py-1 text-xs uppercase tracking-wide text-zinc-400">
                   Week {selectedWeek.week}
                 </span>
-                <span className={`rounded-md border px-2 py-1 text-xs font-medium ${TAG_STYLES[selectedWeek.tag]}`}>{selectedWeek.tag}</span>
-                <span className="rounded-md border border-pink-300/40 bg-pink-500/20 px-2 py-1 text-xs text-pink-100">
+                <span className="rounded-md border border-zinc-600 bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
+                  {getWeekDateLabel(selectedWeek.week)}
+                </span>
+                <span className={`rounded-md border px-2 py-1 text-xs font-medium ${TAG_PILL}`}>{selectedWeek.tag}</span>
+                <span className="rounded-md border border-zinc-600 bg-zinc-800 px-2 py-1 text-xs text-zinc-300">
                   {getGitPhase(selectedWeek.week)}
                 </span>
               </div>
               <h4 className="mt-3 text-2xl font-semibold">
                 {selectedWeek.emoji} {selectedWeek.title}
               </h4>
-              <p className="mt-2 text-slate-200">{selectedWeek.summary}</p>
+              <p className="mt-2 text-zinc-400">{selectedWeek.summary}</p>
 
               <div className="mt-4">
-                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">CS Focus</h5>
-                <p className="mt-1 text-slate-200">{selectedWeek.csFocus}</p>
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">CS Focus</h5>
+                <p className="mt-1 text-zinc-300">{selectedWeek.csFocus}</p>
               </div>
 
               <div className="mt-5">
-                <p className="text-sm font-semibold uppercase tracking-wide text-slate-300">Learning Path</p>
-                <div className="mt-2 flex w-full rounded-full border border-fuchsia-200/30 p-1 sm:inline-flex sm:w-auto">
+                <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Learning Path</p>
+                <div className="mt-2 flex w-full rounded-md border border-zinc-600 p-1 sm:inline-flex sm:w-auto">
                   {(["Beginner", "Advanced"] as PathTrack[]).map((path) => (
                     <button
                       key={path}
                       type="button"
                       aria-pressed={activePath === path}
-                      className={`w-full rounded-full px-3 py-1 text-sm transition sm:w-auto ${activePath === path ? "bg-fuchsia-500/25 text-fuchsia-100" : "text-slate-200 hover:bg-fuchsia-500/15"}`}
+                      className={`w-full rounded px-3 py-1 text-sm transition sm:w-auto ${activePath === path ? "bg-zinc-700 text-zinc-100" : "text-zinc-400 hover:bg-zinc-800"}`}
                       onClick={() => setActivePath(path)}
                     >
                       {path}
@@ -389,13 +403,13 @@ export default function Home() {
               </div>
 
               <div className="mt-4">
-                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Project Goal</h5>
-                <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].goal}</p>
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Project Goal</h5>
+                <p className="mt-1 text-zinc-300">{selectedWeek.forks[activePath].goal}</p>
               </div>
 
               <div className="mt-4">
-                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Activities</h5>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-200">
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Path Activities</h5>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-zinc-300">
                   {selectedWeek.forks[activePath].activities.map((activity) => (
                     <li key={activity}>{activity}</li>
                   ))}
@@ -403,8 +417,8 @@ export default function Home() {
               </div>
 
               <div className="mt-4">
-                <h5 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Path Materials</h5>
-                <p className="mt-1 text-slate-200">{selectedWeek.forks[activePath].materials}</p>
+                <h5 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Path Materials</h5>
+                <p className="mt-1 text-zinc-300">{selectedWeek.forks[activePath].materials}</p>
               </div>
             </article>
           </div>
@@ -417,41 +431,40 @@ export default function Home() {
           heading="Like the curriculum? Secure your child's spot."
           body="You just saw the full 16-week roadmap. Use the quick button below to start enrollment immediately and move into family setup and student applications."
           buttonLabel={ctaButtonLabel}
-          variant="fuchsia"
         />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-10 sm:pb-14 lg:pb-16" aria-labelledby="ai-framework-heading">
-        <div className="rounded-xl border border-blue-300/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/10 to-cyan-600/15 p-5">
+        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
           <h3 id="ai-framework-heading" className="text-2xl font-semibold">
             AI Learning Framework
           </h3>
-          <p className="mt-2 max-w-4xl text-slate-300">
+          <p className="mt-2 max-w-4xl text-zinc-400">
             We address AI directly: it is a critical part of our stack, but it is never a replacement for student thinking. Students plan first,
             build first, and then use AI to test ideas, improve structure, and speed iteration.
           </p>
-          <p className="mt-2 max-w-4xl text-slate-300">
+          <p className="mt-2 max-w-4xl text-zinc-400">
             The rule is clear in every grade band: if you cannot explain it, you do not ship it.
           </p>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-indigo-300/30 bg-indigo-950/40 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-indigo-100">Abstraction Stack</h4>
-              <ul className="mt-3 space-y-2 text-slate-200">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Abstraction Stack</h4>
+              <ul className="mt-3 space-y-2 text-zinc-300">
                 {ABSTRACTION_LAYERS.map((layer) => (
                   <li key={layer.label}>
                     <button
                       type="button"
                       aria-pressed={selectedLayer.label === layer.label}
                       onClick={() => setSelectedLayer(layer)}
-                      className={`w-full rounded-md border bg-gradient-to-r p-2 text-left transition ${
+                      className={`w-full rounded-md border p-2 text-left transition ${
                         selectedLayer.label === layer.label
-                          ? `${layer.color} ring-1 ring-white/30`
-                          : "border-indigo-200/20 from-slate-800/70 to-slate-900/30 hover:border-indigo-200/40"
+                          ? "border-zinc-500 bg-zinc-800"
+                          : "border-zinc-700 bg-zinc-900 hover:border-zinc-600"
                       }`}
                     >
-                      <p className="text-xs uppercase tracking-wide text-slate-300">{layer.label}</p>
-                      <p className="font-medium">
+                      <p className="text-xs uppercase tracking-wide text-zinc-500">{layer.label}</p>
+                      <p className="font-medium text-zinc-200">
                         <span className="mr-2">{layer.icon}</span>
                         {layer.name}
                       </p>
@@ -459,65 +472,65 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 rounded-md border border-indigo-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
+              <div className="mt-3 rounded-md border border-zinc-700 bg-zinc-900 p-3 text-sm text-zinc-300">
+                <p className="font-semibold text-zinc-100">
                   {selectedLayer.icon} {selectedLayer.label}: {selectedLayer.name}
                 </p>
-                <p className="mt-1 text-slate-300">{selectedLayer.detail}</p>
+                <p className="mt-1 text-zinc-400">{selectedLayer.detail}</p>
               </div>
             </article>
 
-            <article className="rounded-lg border border-cyan-300/30 bg-cyan-950/35 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-cyan-100">Three-Phase Workflow</h4>
-              <ul className="mt-3 flex flex-col gap-2 text-slate-200 md:flex-row md:flex-wrap md:items-center">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Three-Phase Workflow</h4>
+              <ul className="mt-3 flex flex-col gap-2 text-zinc-300 md:flex-row md:flex-wrap md:items-center">
                 {AI_PHASES.map((phase, index) => (
                   <li key={phase.title} className="flex max-w-full flex-col items-stretch gap-2 md:flex-row md:items-center md:gap-3">
                     <button
                       type="button"
                       aria-pressed={selectedPhase.title === phase.title}
                       onClick={() => setSelectedPhase(phase)}
-                      className={`w-full min-w-0 rounded-md border bg-gradient-to-r p-3 text-center transition sm:w-auto md:min-w-44 ${
+                      className={`w-full min-w-0 rounded-md border p-3 text-center transition sm:w-auto md:min-w-44 ${
                         selectedPhase.title === phase.title
-                          ? `${phase.color} ring-1 ring-white/30`
-                          : "border-cyan-300/30 from-slate-800/70 to-slate-900/30 hover:border-cyan-200/60"
+                          ? "border-zinc-500 bg-zinc-800"
+                          : "border-zinc-700 bg-zinc-900 hover:border-zinc-600"
                       }`}
                     >
                       <p className="text-xl">{phase.icon}</p>
-                      <p className="mt-1 text-sm font-medium">{phase.title}</p>
+                      <p className="mt-1 text-sm font-medium text-zinc-200">{phase.title}</p>
                     </button>
                     {index < AI_PHASES.length - 1 ? (
-                      <div className="hidden text-lg text-slate-400 md:mx-1 md:block">→</div>
+                      <div className="hidden text-lg text-zinc-500 md:mx-1 md:block">→</div>
                     ) : null}
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 rounded-md border border-cyan-200/30 bg-slate-900/60 p-3 text-sm text-slate-200">
-                <p className="font-semibold text-white">
+              <div className="mt-3 rounded-md border border-zinc-700 bg-zinc-900 p-3 text-sm text-zinc-300">
+                <p className="font-semibold text-zinc-100">
                   {selectedPhase.icon} {selectedPhase.title}
                 </p>
-                <p className="mt-1 text-slate-300">{selectedPhase.detail}</p>
+                <p className="mt-1 text-zinc-400">{selectedPhase.detail}</p>
               </div>
             </article>
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-lg border border-emerald-300/25 bg-emerald-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-100">By Grade Band</h4>
-              <ul className="mt-2 space-y-2 text-slate-200">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">By Grade Band</h4>
+              <ul className="mt-2 space-y-2 text-zinc-300">
                 {GRADE_BAND_EMPHASIS.map((band) => (
-                  <li key={band.title} className="rounded-md border border-emerald-200/20 bg-slate-900/50 p-2">
-                    <p className="text-sm font-medium">{band.title}</p>
-                    <p className="text-xs text-slate-300">{band.detail}</p>
+                  <li key={band.title} className="rounded-md border border-zinc-700 bg-zinc-900 p-2">
+                    <p className="text-sm font-medium text-zinc-200">{band.title}</p>
+                    <p className="text-xs text-zinc-400">{band.detail}</p>
                   </li>
                 ))}
               </ul>
             </article>
 
-            <article className="rounded-lg border border-amber-300/25 bg-amber-950/30 p-4">
-              <h4 className="text-sm font-semibold uppercase tracking-wide text-amber-100">Class Rules</h4>
-              <ul className="mt-2 grid gap-2 text-slate-200">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Class Rules</h4>
+              <ul className="mt-2 grid gap-2 text-zinc-300">
                 {AI_PRACTICES.map((practice) => (
-                  <li key={practice} className="rounded-md border border-amber-200/20 bg-slate-900/50 px-3 py-2 text-sm">
+                  <li key={practice} className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm">
                     {practice}
                   </li>
                 ))}
@@ -535,38 +548,37 @@ export default function Home() {
           heading="Want this learning approach for your child?"
           body="If this AI framework matches what you want in a coding program, take the next step now so your family can begin the application flow today."
           buttonLabel={ctaButtonLabel}
-          variant="cyan"
         />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 pb-12 sm:pb-20" aria-labelledby="capstone-kit-heading">
-        <div className="rounded-xl border border-emerald-300/20 bg-gradient-to-br from-emerald-600/10 via-teal-600/10 to-cyan-600/10 p-5">
+        <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
           <h3 id="capstone-kit-heading" className="mb-4 text-2xl font-semibold">Capstone Kit Preview</h3>
-          <p className="max-w-3xl text-slate-200">
+          <p className="max-w-3xl text-zinc-400">
             Final project teams build one shared system with these kits: a robotic arm car platform and a motion-sensing glove controller.
           </p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <article className="rounded-xl border border-emerald-200/30 bg-emerald-950/30 p-4">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://m.media-amazon.com/images/I/71wfSsqaopL._AC_SL1500_.jpg"
                 alt="Robotic arm car kit with mecanum wheels and mounted arm"
-                className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
+                className="h-56 w-full rounded-md bg-zinc-900 object-contain"
                 loading="lazy"
               />
-              <h4 className="mt-3 font-semibold text-emerald-100">Robotic Arm Car Platform</h4>
-              <p className="mt-1 text-sm text-slate-300">Used for drive control, arm movement, and multi-team integration over WiFi.</p>
+              <h4 className="mt-3 font-semibold text-zinc-200">Robotic Arm Car Platform</h4>
+              <p className="mt-1 text-sm text-zinc-400">Used for drive control, arm movement, and multi-team integration over WiFi.</p>
             </article>
-            <article className="rounded-xl border border-cyan-200/30 bg-cyan-950/30 p-4">
+            <article className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://m.media-amazon.com/images/I/71I3Y+UhGRL._AC_SL1500_.jpg"
                 alt="Wearable motion sensing glove kit for gesture control"
-                className="h-56 w-full rounded-lg bg-slate-950/40 object-contain"
+                className="h-56 w-full rounded-md bg-zinc-900 object-contain"
                 loading="lazy"
               />
-              <h4 className="mt-3 font-semibold text-cyan-100">Motion-Sensing Glove</h4>
-              <p className="mt-1 text-sm text-slate-300">Used to generate gesture commands that are sent wirelessly to the car and arm teams.</p>
+              <h4 className="mt-3 font-semibold text-zinc-200">Motion-Sensing Glove</h4>
+              <p className="mt-1 text-sm text-zinc-400">Used to generate gesture commands that are sent wirelessly to the car and arm teams.</p>
             </article>
           </div>
         </div>
@@ -578,7 +590,6 @@ export default function Home() {
           heading="Your child can start building projects like these."
           body="Don't wait until spots are full. Create your parent account or head to your dashboard now to add your family and start your child's application."
           buttonLabel={ctaButtonLabel}
-          variant="emerald"
         />
       </section>
     </main>
