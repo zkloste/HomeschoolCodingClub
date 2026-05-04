@@ -77,10 +77,10 @@ export function ParentDashboardSection({
 
   if (!hasFamily) {
     return (
-      <section className="rounded-xl border border-blue-300/25 bg-gradient-to-br from-blue-700/20 via-indigo-700/20 to-cyan-700/20 p-8">
+      <section className="rounded-lg border border-zinc-700 bg-zinc-900 p-8">
         <Link
           href="/protected/family/create"
-          className="block w-full rounded-xl border border-blue-200/40 bg-blue-500/30 px-6 py-10 text-center text-2xl font-semibold text-white hover:bg-blue-500/40"
+          className="block w-full rounded-lg border border-zinc-600 bg-zinc-800 px-6 py-10 text-center text-2xl font-semibold text-zinc-100 hover:bg-zinc-700"
         >
           Hey, add your children here to get started.
         </Link>
@@ -90,36 +90,36 @@ export function ParentDashboardSection({
 
   return (
     <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <article className="rounded-xl border border-blue-300/20 bg-gradient-to-br from-blue-600/10 via-indigo-600/10 to-cyan-600/15 p-5">
+      <article className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-xl font-semibold text-white">Current Family</h3>
+          <h3 className="text-xl font-semibold text-zinc-100">Current Family</h3>
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-slate-200/15 bg-slate-900/55 p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-300">
+          <div className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
               Family
             </p>
-            <p className="mt-1 text-lg font-medium text-white">
+            <p className="mt-1 text-lg font-medium text-zinc-100">
               {data?.family.familyName ?? "Family profile missing"}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-200/15 bg-slate-900/55 p-4">
-            <p className="text-xs uppercase tracking-wide text-slate-300">
+          <div className="rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
               Primary Home City
             </p>
-            <p className="mt-1 text-lg font-medium text-white">
+            <p className="mt-1 text-lg font-medium text-zinc-100">
               {data?.family.primaryHomeCity ?? "Not set"}
             </p>
           </div>
         </div>
 
-        <div className="mt-4 rounded-lg border border-slate-200/15 bg-slate-900/55 p-4">
-          <p className="text-xs uppercase tracking-wide text-slate-300">
+        <div className="mt-4 rounded-lg border border-zinc-700 bg-zinc-950 p-4">
+          <p className="text-xs uppercase tracking-wide text-zinc-400">
             Students
           </p>
           {students.length === 0 ? (
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-zinc-400">
               No students are linked to this family yet.
             </p>
           ) : (
@@ -127,22 +127,22 @@ export function ParentDashboardSection({
               {students.map((student) => (
                 <li
                   key={student.id}
-                  className="rounded-md border border-slate-200/10 bg-slate-950/50 p-3"
+                  className="rounded-md border border-zinc-700 bg-zinc-900 p-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-medium text-white">{student.fullName}</p>
-                      <p className="mt-1 text-xs text-slate-300">
+                      <p className="text-sm font-medium text-zinc-100">{student.fullName}</p>
+                      <p className="mt-1 text-xs text-zinc-400">
                         {student.relationshipToStudent} · {student.gradeLevel}
                       </p>
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-zinc-500">
                         Birth date: {student.birthDate ? formatDate(student.birthDate) : "Not set"}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setEditingStudentId(student.id)}
-                      className="rounded-md border border-amber-300/40 bg-amber-500/20 px-3 py-2 text-sm font-medium text-amber-100 hover:bg-amber-500/30"
+                      className="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700"
                     >
                       Edit
                     </button>
@@ -155,7 +155,7 @@ export function ParentDashboardSection({
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="mt-4 rounded-md border border-blue-300/40 bg-blue-500/20 px-3 py-2 text-left text-sm font-medium text-blue-100 hover:bg-blue-500/30"
+            className="mt-4 rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-left text-sm font-medium text-zinc-100 hover:bg-zinc-700"
           >
             Add child
           </button>
@@ -163,25 +163,25 @@ export function ParentDashboardSection({
       </article>
 
       <div className="grid gap-6">
-        <article className="rounded-xl border border-emerald-300/25 bg-emerald-950/30 p-5">
-          <h3 className="text-xl font-semibold text-white">Next Upcoming Semester</h3>
-          <p className="mt-2 text-sm text-slate-200">
+        <article className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
+          <h3 className="text-xl font-semibold text-zinc-100">Next Upcoming Semester</h3>
+          <p className="mt-2 text-sm text-zinc-300">
             {nextSemester
               ? `${nextSemester.name} (${formatDate(nextSemester.startDate)} - ${formatDate(nextSemester.endDate)})`
               : "No upcoming semester is currently available."}
           </p>
           {nextSemester && (
-            <p className="mt-2 text-sm text-emerald-100">
+            <p className="mt-2 text-sm text-zinc-300">
               {appliedCount}/{students.length} students applied
             </p>
           )}
 
           {!nextSemester ? (
-            <p className="mt-4 text-sm text-slate-300">
+            <p className="mt-4 text-sm text-zinc-400">
               Check back soon once the next semester has been published.
             </p>
           ) : students.length === 0 ? (
-            <p className="mt-4 text-sm text-slate-300">
+            <p className="mt-4 text-sm text-zinc-400">
               Add students to your family profile to apply for {nextSemester.name}.
             </p>
           ) : (
@@ -193,22 +193,28 @@ export function ParentDashboardSection({
                 return (
                   <li
                     key={student.id}
-                    className="rounded-md border border-slate-200/10 bg-slate-900/60 p-3"
+                    className="rounded-md border border-zinc-700 bg-zinc-950 p-3"
                   >
-                    <p className="font-medium text-white">{student.fullName}</p>
-                    <p className="mt-1 text-xs text-slate-300">
-                      {hasApplied
-                        ? `Application status: ${formatStatus(status)}`
-                        : "Not applied for this semester"}
-                    </p>
+                    <p className="font-medium text-zinc-100">{student.fullName}</p>
                     {hasApplied ? (
-                      <span className="mt-3 block w-full rounded-md border border-emerald-300/30 bg-emerald-500/15 px-3 py-2 text-left text-sm font-medium text-emerald-100">
+                      <p className="mt-2">
+                        <span
+                          className={`inline-flex rounded-md border px-2 py-1 text-xs font-medium ${getParentStatusBadgeClass(status)}`}
+                        >
+                          Application status: {formatStatus(status)}
+                        </span>
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-xs text-zinc-400">Not applied for this semester</p>
+                    )}
+                    {hasApplied ? (
+                      <span className="mt-3 block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-left text-sm font-medium text-zinc-200">
                         {`Already applied (${formatStatus(status)})`}
                       </span>
                     ) : (
                       <Link
                         href={`/protected/applications/new?studentId=${encodeURIComponent(student.id)}&semesterId=${encodeURIComponent(nextSemester.id)}`}
-                        className="mt-3 block w-full rounded-md border border-blue-300/40 bg-blue-500/20 px-3 py-2 text-left text-sm font-medium text-blue-100 hover:bg-blue-500/30"
+                        className="mt-3 block w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-left text-sm font-medium text-zinc-100 hover:bg-zinc-700"
                       >
                         {`Apply for ${nextSemester.name}`}
                       </Link>
@@ -220,14 +226,14 @@ export function ParentDashboardSection({
           )}
         </article>
 
-        <article className="rounded-xl border border-fuchsia-300/25 bg-fuchsia-950/25 p-5">
-          <h3 className="text-xl font-semibold text-white">Semester Application Snapshot</h3>
+        <article className="rounded-lg border border-zinc-700 bg-zinc-900 p-5">
+          <h3 className="text-xl font-semibold text-zinc-100">Semester Application Snapshot</h3>
           {!nextSemester ? (
-            <p className="mt-3 text-sm text-slate-300">
+            <p className="mt-3 text-sm text-zinc-400">
               No upcoming semester is available to summarize.
             </p>
           ) : students.length === 0 ? (
-            <p className="mt-3 text-sm text-slate-300">
+            <p className="mt-3 text-sm text-zinc-400">
               No students found for this family.
             </p>
           ) : (
@@ -238,12 +244,16 @@ export function ParentDashboardSection({
                 return (
                   <li
                     key={student.id}
-                    className="rounded-md border border-slate-200/10 bg-slate-900/60 p-3"
+                    className="rounded-md border border-zinc-700 bg-zinc-950 p-3"
                   >
-                    <p className="font-medium text-white">{student.fullName}</p>
-                    <p className="text-sm text-slate-300">{nextSemester.name}</p>
-                    <p className="mt-1 text-xs text-fuchsia-100">
-                      Status: {status ? formatStatus(status) : "Not applied"}
+                    <p className="font-medium text-zinc-100">{student.fullName}</p>
+                    <p className="text-sm text-zinc-400">{nextSemester.name}</p>
+                    <p className="mt-2">
+                      <span
+                        className={`inline-flex rounded-md border px-2 py-1 text-xs font-medium ${getParentStatusBadgeClass(status)}`}
+                      >
+                        Status: {status ? formatStatus(status) : "Not applied"}
+                      </span>
                     </p>
                   </li>
                 );
@@ -275,6 +285,21 @@ function formatStatus(status: string) {
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function getParentStatusBadgeClass(status?: string) {
+  switch (status) {
+    case "accepted":
+      return "border-emerald-400/50 bg-emerald-500/20 text-emerald-200";
+    case "pending":
+      return "border-amber-400/50 bg-amber-500/20 text-amber-200";
+    case "waitlisted":
+      return "border-yellow-400/50 bg-yellow-500/20 text-yellow-200";
+    case "rejected":
+      return "border-rose-400/50 bg-rose-500/20 text-rose-200";
+    default:
+      return "border-zinc-600 bg-zinc-800 text-zinc-300";
+  }
 }
 
 function formatDate(value: string) {
@@ -329,40 +354,40 @@ function AddStudentModal({
           name="fullName"
           placeholder="Child full name"
           required
-          className="rounded-md border border-slate-200/20 bg-slate-950/70 px-3 py-2 text-sm text-white placeholder:text-slate-400"
+          className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <input
           type="text"
           name="relationshipToStudent"
           placeholder="Relationship to student"
           required
-          className="rounded-md border border-slate-200/20 bg-slate-950/70 px-3 py-2 text-sm text-white placeholder:text-slate-400"
+          className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <input
           type="text"
           name="gradeLevel"
           placeholder="Grade level"
           required
-          className="rounded-md border border-slate-200/20 bg-slate-950/70 px-3 py-2 text-sm text-white placeholder:text-slate-400"
+          className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
-        <label className="grid gap-1 text-xs text-slate-300">
+        <label className="grid gap-1 text-xs text-zinc-400">
           Birth date (optional)
           <input
             type="date"
             name="birthDate"
-            className="rounded-md border border-slate-200/20 bg-slate-950/70 px-3 py-2 text-sm text-white"
+            className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
           />
         </label>
         <div className="mt-1 flex items-center gap-2">
           <ActionButton
             label="Add child to family"
             pendingLabel="Adding child..."
-            className="rounded-md border border-blue-300/40 bg-blue-500/20 px-3 py-2 text-sm font-medium text-blue-100 hover:bg-blue-500/30"
+            className="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700"
           />
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-200/20 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 hover:bg-slate-800"
+            className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800"
           >
             Cancel
           </button>
@@ -430,14 +455,14 @@ function EditStudentModal({
           name="fullName"
           defaultValue={student.fullName}
           required
-          className="rounded-md border border-slate-200/20 bg-slate-950/80 px-3 py-2 text-sm text-white"
+          className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
         />
         <input
           type="text"
           name="relationshipToStudent"
           defaultValue={student.relationshipToStudent}
           required
-          className="rounded-md border border-slate-200/20 bg-slate-950/80 px-3 py-2 text-sm text-white"
+          className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
         />
         <div className="grid gap-2 sm:grid-cols-2">
           <input
@@ -445,25 +470,25 @@ function EditStudentModal({
             name="gradeLevel"
             defaultValue={student.gradeLevel}
             required
-            className="rounded-md border border-slate-200/20 bg-slate-950/80 px-3 py-2 text-sm text-white"
+            className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
           />
           <input
             type="date"
             name="birthDate"
             defaultValue={student.birthDate ?? ""}
-            className="rounded-md border border-slate-200/20 bg-slate-950/80 px-3 py-2 text-sm text-white"
+            className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
           />
         </div>
         <div className="mt-1 flex items-center gap-2">
           <ActionButton
             label="Save changes"
             pendingLabel="Saving..."
-            className="rounded-md border border-amber-300/40 bg-amber-500/20 px-3 py-2 text-sm font-medium text-amber-100 hover:bg-amber-500/30"
+            className="rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700"
           />
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-200/20 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 hover:bg-slate-800"
+            className="rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800"
           >
             Cancel
           </button>
@@ -476,7 +501,7 @@ function EditStudentModal({
         <ActionButton
           label="Remove child"
           pendingLabel="Removing..."
-          className="w-full rounded-md border border-red-300/40 bg-red-500/20 px-3 py-2 text-left text-sm font-medium text-red-100 hover:bg-red-500/30"
+          className="w-full rounded-md border border-zinc-600 bg-zinc-800 px-3 py-2 text-left text-sm font-medium text-zinc-100 hover:bg-zinc-700"
         />
         <FormMessage state={removeState} />
       </form>
@@ -515,15 +540,15 @@ function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="w-full max-w-lg rounded-xl border border-slate-200/20 bg-slate-900 p-5 shadow-2xl"
+        className="w-full max-w-lg rounded-lg border border-zinc-700 bg-zinc-900 p-5 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h4 className="text-lg font-semibold text-white">{title}</h4>
+          <h4 className="text-lg font-semibold text-zinc-100">{title}</h4>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-slate-200/20 bg-slate-800 px-2 py-1 text-sm text-slate-200 hover:bg-slate-700"
+            className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-1 text-sm text-zinc-300 hover:bg-zinc-700"
           >
             Close
           </button>
@@ -560,7 +585,7 @@ function FormMessage({ state }: { state: FamilyFormState }) {
   return (
     <p
       className={`text-sm ${
-        state.status === "success" ? "text-emerald-200" : "text-red-300"
+        state.status === "success" ? "text-zinc-300" : "text-zinc-400"
       }`}
     >
       {state.message}

@@ -7,16 +7,16 @@ import { createClient } from "@/lib/supabase/client";
 
 function getLinkClasses(isActive: boolean) {
   if (isActive) {
-    return "inline-flex min-h-11 items-center rounded-md border border-indigo-300/70 bg-indigo-500/25 px-3 py-1.5 text-white whitespace-nowrap";
+    return "inline-flex min-h-11 items-center rounded-md border border-zinc-500 bg-zinc-800 px-3 py-1.5 text-zinc-100 whitespace-nowrap";
   }
 
-  return "inline-flex min-h-11 items-center rounded-md border border-white/20 px-3 py-1.5 whitespace-nowrap hover:bg-white/10";
+  return "inline-flex min-h-11 items-center rounded-md border border-zinc-700 px-3 py-1.5 text-zinc-300 whitespace-nowrap hover:border-zinc-600 hover:bg-zinc-800";
 }
 
 function signUpButtonClasses(isActive: boolean) {
   return isActive
-    ? "inline-flex min-h-11 items-center rounded-md border border-indigo-300/70 bg-indigo-500/25 px-3 py-1.5 font-medium text-white whitespace-nowrap"
-    : "inline-flex min-h-11 items-center rounded-md bg-indigo-500 px-3 py-1.5 font-medium text-white whitespace-nowrap hover:bg-indigo-400";
+    ? "inline-flex min-h-11 items-center rounded-md border border-zinc-500 bg-zinc-800 px-3 py-1.5 font-medium text-zinc-100 whitespace-nowrap"
+    : "inline-flex min-h-11 items-center rounded-md border border-zinc-600 bg-zinc-800 px-3 py-1.5 font-medium text-zinc-100 whitespace-nowrap hover:border-zinc-500 hover:bg-zinc-700";
 }
 
 export function SiteNavbar() {
@@ -60,13 +60,13 @@ export function SiteNavbar() {
   };
 
   return (
-    <header className="border-b border-indigo-300/20 bg-slate-900/70 backdrop-blur">
+    <header className="border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
       <div className="mx-auto w-full max-w-6xl px-5 py-4">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Homeschool Coding Club</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Homeschool Coding Club</p>
           <button
             type="button"
-            className="inline-flex min-h-11 items-center rounded-md border border-white/20 px-3 text-sm text-white md:hidden"
+            className="inline-flex min-h-11 items-center rounded-md border border-zinc-700 px-3 text-sm text-zinc-300 hover:bg-zinc-800 md:hidden"
             aria-controls="mobile-site-menu"
             aria-expanded={isMenuOpen}
             aria-label="Toggle navigation menu"
@@ -93,7 +93,7 @@ export function SiteNavbar() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="inline-flex min-h-11 items-center rounded-md border border-white/20 px-3 py-1.5 hover:bg-white/10"
+                className="inline-flex min-h-11 items-center rounded-md border border-zinc-700 px-3 py-1.5 text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800"
               >
                 Sign out
               </button>
@@ -128,7 +128,7 @@ export function SiteNavbar() {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="inline-flex min-h-11 items-center rounded-md border border-white/20 px-3 py-1.5 text-left hover:bg-white/10"
+                  className="inline-flex min-h-11 items-center rounded-md border border-zinc-700 px-3 py-1.5 text-left text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800"
                 >
                   Sign out
                 </button>
